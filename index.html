@@ -1,0 +1,2604 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="antialiased">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aura Shield - Segurança Avançada</title>
+    <link rel="icon" type="image/png" href="https://res.cloudinary.com/dpt3zi8kx/image/upload/v1784515927/Captura_de_tela_2026-07-19_224146-removebg-preview_qbyei7.png">
+
+    <!-- Integração Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Iconify para iconografia -->
+    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+
+    <!-- Tipografia Premium: Inter, Space Grotesk e JetBrains Mono (Aura Design System) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-page: #000000;
+            --bg-surface: #111111;
+            --text-main: #FFFFFF;
+            --text-secondary: #E2E8F0;
+
+            --color-primary: #384B80;
+            --color-primary-hover: #5d83ca;
+            --color-danger: #932222;
+
+            --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--bg-page);
+            color: var(--text-main);
+            margin: 0;
+            overflow-x: hidden;
+            overscroll-behavior: none;
+        }
+
+        /* LENIS CSS SETUP */
+        html.lenis,
+        html.lenis body {
+            height: auto;
+        }
+
+        .lenis.lenis-smooth {
+            scroll-behavior: auto !important;
+        }
+
+        .lenis.lenis-smooth [data-lenis-prevent] {
+            overscroll-behavior: contain;
+        }
+
+        .lenis.lenis-stopped {
+            overflow: hidden;
+        }
+
+        .lenis.lenis-scrolling iframe {
+            pointer-events: none;
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-page);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+
+        /* Scrubber Layout */
+        #hero-container {
+            position: relative;
+            height: 500vh;
+            /* Aumentado para longo scroll */
+        }
+
+        #video-pin {
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            width: 100%;
+            overflow: hidden;
+            background: #000;
+        }
+
+        #hero-canvas {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            min-width: 100%;
+            min-height: 100%;
+            width: auto;
+            height: auto;
+            object-fit: cover;
+            opacity: 0.8;
+            filter: contrast(1.1);
+            will-change: transform;
+        }
+
+        /* Responsividade do Video para Mobile */
+        @media (max-width: 768px) {
+            #hero-container {
+                height: 100svh !important;
+                /* Altura de uma única dobra no mobile */
+            }
+
+            #video-pin {
+                height: 100svh;
+                position: relative;
+                /* Remove o comportamento fixado/sticky no mobile */
+            }
+
+            #hero-canvas {
+                position: absolute;
+                inset: 0;
+                width: 100%;
+                height: 100%;
+                transform: none;
+                top: auto;
+                left: auto;
+                min-width: unset;
+                min-height: unset;
+                filter: none;
+                /* Desativa o filtro pesado de contraste no mobile */
+            }
+
+            /* NOVA MÁSCARA GRADIENT MOBILE */
+            .video-gradient-mask {
+                background: linear-gradient(180deg, rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.6) 50%, rgba(0, 0, 0, 0.95) 100%) !important;
+            }
+
+            /* AJUSTE RESPONSIVO DO CONTEÚDO TEXTUAL */
+            .hero-ui>div {
+                align-items: flex-start !important;
+                /* overrides items-center */
+                padding-top: 25vh !important;
+                /* breathing room superior */
+            }
+
+            .hero-ui h1 {
+                font-size: 3.8rem !important;
+                /* escala tipográfica mobile premium */
+                line-height: 0.95 !important;
+            }
+
+            .hero-ui p {
+                font-size: 1.1rem !important;
+                /* melhor legibilidade */
+                margin-top: 1.5rem !important;
+                max-width: 95% !important;
+            }
+
+            .hero-ui .pt-10 {
+                padding-top: 2rem !important;
+                gap: 1.25rem !important;
+                /* ajusta botoes */
+            }
+
+            /* --- EFEITOS DE INTERAÇÃO MOBILE (TAP) RESTAURADOS DO DESKTOP --- */
+            .transparent-text:active {
+                color: rgba(255, 255, 255, 0.9);
+                -webkit-text-stroke: 1px transparent;
+                text-shadow: 0 0 30px rgba(255, 255, 255, 0.6);
+            }
+
+            .beam-button:active::before {
+                left: 100%;
+                transition: left 0.3s;
+            }
+
+            .beam-button:active {
+                transform: translateY(-2px) scale(0.98);
+                box-shadow: 0 0 20px rgba(93, 131, 202, 0.6);
+            }
+        }
+
+        /* Gradient mask para garantir leitura do texto na esquerda */
+        .video-gradient-mask {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(90deg, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.4) 40%, transparent 100%);
+            z-index: 5;
+            pointer-events: none;
+        }
+
+        /* UI Overlay Strategy */
+        .hero-ui {
+            position: absolute;
+            inset: 0;
+            z-index: 10;
+            display: flex;
+            pointer-events: none;
+        }
+
+        .interactive {
+            pointer-events: auto;
+        }
+
+        .glass-surface {
+            background: rgba(30, 30, 32, 0.4);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .split-line {
+            overflow: hidden;
+            display: block;
+            padding-bottom: 0.3em;
+            margin-bottom: -0.3em;
+        }
+
+        .split-word {
+            display: inline-block;
+            transform: translateY(110%);
+            opacity: 0;
+        }
+
+        /* Text Shadow para destacar acima do vídeo */
+        .text-glow {
+            text-shadow: 0 2px 20px rgba(0, 0, 0, 0.8);
+        }
+
+        /* Efeito de Letra Vazada com Brilho no Hover */
+        .transparent-text {
+            color: transparent;
+            -webkit-text-stroke: 1px rgba(255, 255, 255, 0.4);
+            transition: color 0.5s ease, -webkit-text-stroke 0.5s ease, text-shadow 0.5s ease;
+            position: relative;
+        }
+
+        .transparent-text:hover {
+            color: rgba(255, 255, 255, 0.9);
+            -webkit-text-stroke: 1px transparent;
+            text-shadow: 0 0 30px rgba(255, 255, 255, 0.6);
+        }
+
+        /* Efeito Glow para links da Navbar similar à palavra Avançada */
+        .nav-glow-effect {
+            transition: color 0.4s ease, text-shadow 0.4s ease, transform 0.4s ease;
+        }
+
+        .nav-glow-effect:hover {
+            color: #ffffff;
+            text-shadow: 0 0 8px rgba(255, 255, 255, 1), 0 0 20px rgba(255, 255, 255, 0.9), 0 0 35px rgba(255, 255, 255, 0.7), 0 0 50px rgba(255, 255, 255, 0.5);
+            transform: translateY(-1px);
+        }
+
+
+
+        /* Efeito Beam no Botão */
+        .beam-button {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .beam-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .beam-button:hover::before {
+            left: 100%;
+        }
+
+        /* Shimmer Animation from Design System 15 */
+        @keyframes shimmer {
+            from {
+                transform: translateX(-100%) skewX(-15deg);
+            }
+
+            to {
+                transform: translateX(200%) skewX(-15deg);
+            }
+        }
+
+        .btn-whatsapp-shimmer {
+            position: relative;
+            overflow: hidden;
+            isolation: isolate;
+            background-color: #25D366 !important;
+            border-color: transparent !important;
+        }
+
+        .btn-whatsapp-shimmer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            transform: translateX(-100%) skewX(-15deg);
+            z-index: -1;
+            transition: all 0.5s;
+        }
+
+        .btn-whatsapp-shimmer:hover::before {
+            animation: shimmer 1.5s infinite;
+        }
+
+        .btn-whatsapp-shimmer:active {
+            transform: translateY(-2px) scale(0.98);
+            box-shadow: 0 0 20px rgba(37, 211, 102, 0.6);
+        }
+
+        .btn-glow-white {
+            color: #ffffff !important;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.7);
+        }
+
+        .btn-glow-white:hover {
+            text-shadow: none !important;
+        }
+
+
+        /* Glowing Dynamics */
+        .flashlight-zone {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .flashlight-zone::before {
+            content: "";
+            position: absolute;
+            inset: 0px;
+            background: radial-gradient(800px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255, 255, 255, 0.05), transparent 40%);
+            opacity: 0;
+            transition: opacity 0.5s;
+            pointer-events: none;
+            z-index: 5;
+        }
+
+        .flashlight-zone:hover::before {
+            opacity: 1;
+        }
+
+        .flashlight-zone-dark::before {
+            background: radial-gradient(800px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255, 255, 255, 0.08), transparent 40%);
+        }
+
+        /* DS15 Reveal System */
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 1.2s var(--ease-out);
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .delay-100 {
+            transition-delay: 0.1s;
+        }
+
+        .delay-200 {
+            transition-delay: 0.2s;
+        }
+
+        .delay-300 {
+            transition-delay: 0.3s;
+        }
+
+        .delay-500 {
+            transition-delay: 0.5s;
+        }
+
+        .delay-700 {
+            transition-delay: 0.7s;
+        }
+
+        .text-reveal-wrapper {
+            overflow: hidden;
+            display: inline-block;
+            vertical-align: bottom;
+        }
+
+        .text-reveal-content {
+            transform: translateY(110%);
+            opacity: 0;
+            transition: transform 1.2s var(--ease-out), opacity 1.2s ease;
+            display: inline-block;
+        }
+
+        .reveal-active .text-reveal-content,
+        .reveal.active .text-reveal-content {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        /* SERVICES CAROUSEL & 3D TILT */
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        .tilt-card {
+            transform-style: preserve-3d;
+            transform: perspective(1200px) rotateX(var(--rotate-x, 0deg)) rotateY(var(--rotate-y, 0deg)) scale3d(1, 1, 1);
+            transition: transform 0.1s ease, box-shadow 0.4s ease;
+            will-change: transform;
+        }
+
+        .tilt-card:not(:hover) {
+            transition: transform 0.8s var(--ease-out), box-shadow 0.8s ease;
+            --rotate-x: 0deg !important;
+            --rotate-y: 0deg !important;
+        }
+
+        .tilt-content {
+            transform: translateZ(50px);
+            transition: transform 0.3s ease;
+        }
+
+        .tilt-card:hover {
+            box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.8), 0 0 40px rgba(56, 75, 128, 0.2);
+        }
+
+        .card-glow {
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(800px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255, 255, 255, 0.06), transparent 40%);
+            opacity: 0;
+            transition: opacity 0.5s;
+            pointer-events: none;
+            z-index: 2;
+            border-radius: inherit;
+        }
+
+        .tilt-card:hover .card-glow {
+            opacity: 1;
+        }
+
+        .border-beam {
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            padding: 1px;
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        .border-beam::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 200%;
+            height: 200%;
+            background: conic-gradient(from 0deg, transparent 70%, rgba(255, 255, 255, 0.8) 100%);
+            transform: translate(-50%, -50%) rotate(0deg);
+            animation: spin-beam 4s linear infinite;
+            opacity: 0;
+            transition: opacity 0.4s;
+        }
+
+        .tilt-card:hover .border-beam::before {
+            opacity: 1;
+        }
+
+        @keyframes spin-beam {
+            100% {
+                transform: translate(-50%, -50%) rotate(360deg);
+            }
+        }
+
+        /* Specific Service Animations */
+        .scanner-line {
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--color-primary), transparent);
+            box-shadow: 0 0 10px var(--color-primary);
+            position: absolute;
+            animation: scan 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes scan {
+            0% {
+                top: 10%;
+            }
+
+            100% {
+                top: 90%;
+            }
+        }
+
+        .pulse-ring {
+            position: absolute;
+            border-radius: 50%;
+            border: 1px solid var(--color-danger);
+            animation: pulse-ring 2s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+        }
+
+        @keyframes pulse-ring {
+            0% {
+                width: 0;
+                height: 0;
+                opacity: 1;
+            }
+
+            100% {
+                width: 200px;
+                height: 200px;
+                opacity: 0;
+            }
+        }
+
+        .tracking-dot {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: #fff;
+            border-radius: 50%;
+            box-shadow: 0 0 10px #fff;
+            animation: move-dot 4s linear infinite alternate;
+        }
+
+        @keyframes move-dot {
+            0% {
+                transform: translate(0, 0);
+            }
+
+            100% {
+                transform: translate(100px, 50px);
+            }
+        }
+
+        /* Clients Section Dynamics */
+        .client-card.is-active {
+            opacity: 1 !important;
+            transform: scale(1) translateZ(30px) !important;
+            box-shadow: 0 0 60px rgba(56, 75, 128, 0.6), 0 20px 40px rgba(0, 0, 0, 0.2) !important;
+            border-color: rgba(93, 131, 202, 0.4) !important;
+        }
+
+        .client-card.is-active .client-logo {
+            filter: brightness(0) invert(1) !important;
+            opacity: 1 !important;
+        }
+
+        .client-card.is-active .border-sweep {
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+
+        .client-card-wrapper {
+            perspective: 1200px;
+            transform-style: preserve-3d;
+        }
+
+        .connection-beam.is-active {
+            opacity: 1 !important;
+            transition: opacity 0.5s ease-in-out;
+        }
+
+        .translate-z-0 {
+            transform: translateZ(0);
+        }
+
+        .rounded-inherit {
+            border-radius: inherit;
+        }
+
+        /* Custom Carousel Keyframe Animations */
+        @keyframes keyPulseLeft {
+
+            0%,
+            100% {
+                opacity: 0.3;
+                transform: scale(1);
+                border-color: rgba(255, 255, 255, 0.1);
+                background: rgba(255, 255, 255, 0.02);
+            }
+
+            50% {
+                opacity: 1;
+                transform: scale(0.95);
+                border-color: var(--color-primary-hover);
+                background: rgba(56, 75, 128, 0.2);
+            }
+        }
+
+        @keyframes keyPulseRight {
+
+            0%,
+            100% {
+                opacity: 1;
+                transform: scale(0.95);
+                border-color: var(--color-primary-hover);
+                background: rgba(56, 75, 128, 0.2);
+            }
+
+            50% {
+                opacity: 0.3;
+                transform: scale(1);
+                border-color: rgba(255, 255, 255, 0.1);
+                background: rgba(255, 255, 255, 0.02);
+            }
+        }
+
+        @keyframes swipeSwipe {
+            0% {
+                transform: translateX(-30px);
+                opacity: 0;
+            }
+
+            20% {
+                opacity: 1;
+            }
+
+            80% {
+                opacity: 1;
+            }
+
+            100% {
+                transform: translateX(30px);
+                opacity: 0;
+            }
+        }
+
+        .animate-pulse-left {
+            animation: keyPulseLeft 2s infinite ease-in-out;
+        }
+
+        .animate-pulse-right {
+            animation: keyPulseRight 2s infinite ease-in-out;
+        }
+
+        .animate-swipe {
+            animation: swipeSwipe 2s infinite ease-in-out;
+        }
+
+        /* FAQ Section Styles (Aura DS15) */
+        .faq-flashlight-card {
+            position: relative;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            transition: border-color 0.4s var(--ease-out), box-shadow 0.4s var(--ease-out), background-color 0.4s var(--ease-out), transform 0.4s var(--ease-out);
+        }
+
+        .faq-flashlight-card:hover {
+            border-color: rgba(56, 75, 128, 0.15);
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.03);
+            transform: translateY(-2px);
+        }
+
+        .faq-flashlight-card::before {
+            content: "";
+            position: absolute;
+            inset: 0px;
+            background: radial-gradient(600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(56, 75, 128, 0.06), transparent 45%);
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            pointer-events: none;
+            z-index: 1;
+            border-radius: inherit;
+        }
+
+        .faq-flashlight-card:hover::before {
+            opacity: 1;
+        }
+
+        .faq-icon {
+            transition: transform 0.4s var(--ease-out), color 0.4s ease;
+        }
+
+        .faq-item.is-open .faq-icon {
+            transform: rotate(45deg);
+            color: var(--color-danger);
+        }
+
+        .faq-item.is-open {
+            border-color: rgba(56, 75, 128, 0.2);
+            background: #ffffff;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.05);
+            transform: translateY(-2px);
+        }
+
+        .faq-item.is-open .faq-content {
+            grid-template-rows: 1fr;
+        }
+
+        /* Testimonials Section Styles (Aura DS4) */
+        .testimonials-section {
+            position: relative;
+            background: #000000;
+            overflow: hidden;
+            width: 100%;
+        }
+
+        .marquee-container {
+            position: relative;
+            width: 100%;
+            overflow: hidden;
+            padding: 3rem 0;
+            mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
+            -webkit-mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
+        }
+
+        .marquee-content {
+            display: flex;
+            gap: 2.5rem;
+            width: max-content;
+            animation: marqueeScroll 45s linear infinite;
+        }
+
+        .marquee-content:hover {
+            animation-play-state: paused;
+        }
+
+        @keyframes marqueeScroll {
+            0% {
+                transform: translateX(0);
+            }
+
+            100% {
+                transform: translateX(calc(-50% - 1.25rem));
+            }
+        }
+
+        .testimonial-card {
+            width: 440px;
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 2rem;
+            padding: 3rem 2.5rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: all 0.5s var(--ease-out);
+            flex-shrink: 0;
+            position: relative;
+            box-shadow:
+                inset 0 0 30px rgba(255, 255, 255, 0.01),
+                0 15px 35px rgba(0, 0, 0, 0.4);
+        }
+
+        .testimonial-card::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(800px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(93, 131, 202, 0.08), transparent 45%);
+            opacity: 0;
+            transition: opacity 0.5s var(--ease-out);
+            pointer-events: none;
+            z-index: 1;
+            border-radius: inherit;
+        }
+
+        .testimonial-card:hover::before {
+            opacity: 1;
+        }
+
+        .testimonial-card:hover {
+            background: rgba(255, 255, 255, 0.04);
+            border-color: #5d83ca;
+            transform: translateY(-10px) scale(1.01);
+            box-shadow:
+                0 0 30px rgba(93, 131, 202, 0.35),
+                inset 0 0 20px rgba(93, 131, 202, 0.08),
+                0 25px 50px rgba(0, 0, 0, 0.5);
+        }
+
+        .testimonial-card::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            border-radius: 2rem;
+            padding: 1px;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), transparent, rgba(56, 75, 128, 0.15));
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            opacity: 0.5;
+            pointer-events: none;
+            z-index: 3;
+        }
+
+        .testimonial-card>* {
+            position: relative;
+            z-index: 2;
+        }
+
+        .quote-icon {
+            font-size: 3.5rem;
+            font-family: 'Space Grotesk', sans-serif;
+            color: #5d83ca;
+            line-height: 1;
+            margin-bottom: 1.25rem;
+            opacity: 0.6;
+        }
+
+        .testimonial-text {
+            font-size: 1.05rem;
+            color: rgba(255, 255, 255, 0.75);
+            line-height: 1.6;
+            margin-bottom: 2rem;
+            font-weight: 300;
+            font-style: italic;
+        }
+
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .author-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            flex-shrink: 0;
+        }
+
+        .author-info {
+            display: flex;
+            flex-direction: column;
+            gap: 0.1rem;
+        }
+
+        .author-name {
+            font-weight: 700;
+            color: #ffffff;
+            font-size: 0.95rem;
+            letter-spacing: 0.01em;
+        }
+
+        .author-role {
+            font-size: 0.75rem;
+            color: #384B80;
+            font-family: 'JetBrains Mono', monospace;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        @media (max-width: 768px) {
+            .testimonial-card {
+                width: 320px;
+                padding: 2rem;
+            }
+
+            .testimonial-text {
+                font-size: 0.95rem;
+            }
+
+            /* Força o estado ativo dos botões dos cards de serviços no mobile */
+            /* Card 1: CFTV */
+            #services-carousel>div:nth-child(1) .beam-button {
+                background-color: var(--color-primary) !important;
+                border-color: var(--color-primary) !important;
+                box-shadow: 0 0 20px rgba(56, 75, 128, 0.6) !important;
+                transform: translateX(0.5rem) !important;
+            }
+
+            #services-carousel>div:nth-child(1) .beam-button>div {
+                background-color: white !important;
+                color: var(--color-primary) !important;
+            }
+
+            #services-carousel>div:nth-child(1) .beam-button iconify-icon {
+                transform: translateX(0.125rem) !important;
+            }
+
+            /* Card 2: Alarmes */
+            #services-carousel>div:nth-child(2) .beam-button {
+                background-color: var(--color-danger) !important;
+                border-color: var(--color-danger) !important;
+                box-shadow: 0 0 20px rgba(147, 34, 34, 0.6) !important;
+                transform: translateX(0.5rem) !important;
+            }
+
+            #services-carousel>div:nth-child(2) .beam-button>div {
+                background-color: white !important;
+                color: var(--color-danger) !important;
+            }
+
+            #services-carousel>div:nth-child(2) .beam-button iconify-icon {
+                transform: translateX(0.125rem) !important;
+            }
+
+            /* Card 3: Rastreamento */
+            #services-carousel>div:nth-child(3) .beam-button {
+                background-color: white !important;
+                color: black !important;
+                box-shadow: 0 0 20px rgba(255, 255, 255, 0.6) !important;
+                transform: translateX(0.5rem) !important;
+            }
+
+            #services-carousel>div:nth-child(3) .beam-button>div {
+                background-color: black !important;
+                color: white !important;
+            }
+
+            #services-carousel>div:nth-child(3) .beam-button iconify-icon {
+                transform: translateX(0.125rem) !important;
+            }
+
+            /* Card 4: Barreiras de Alta Tensão */
+            #services-carousel>div:nth-child(4) .beam-button {
+                background-color: #5d83ca !important;
+                border-color: #5d83ca !important;
+                box-shadow: 0 0 20px rgba(93, 131, 202, 0.6) !important;
+                transform: translateX(0.5rem) !important;
+            }
+
+            #services-carousel>div:nth-child(4) .beam-button>div {
+                background-color: white !important;
+                color: #5d83ca !important;
+            }
+
+            #services-carousel>div:nth-child(4) .beam-button iconify-icon {
+                transform: translateX(0.125rem) !important;
+            }
+        }
+
+        /* Floating WhatsApp Button */
+        #whatsapp-floating-btn {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 60;
+            width: 50px;
+            height: 50px;
+            background-color: #25D366;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4);
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(20px);
+            transition: opacity 0.4s ease, transform 0.4s ease, box-shadow 0.3s ease;
+        }
+
+        #whatsapp-floating-btn.show {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translateY(0);
+        }
+
+        #whatsapp-floating-btn:hover {
+            box-shadow: 0 6px 25px rgba(37, 211, 102, 0.6);
+            transform: translateY(-3px) scale(1.05);
+        }
+    </style>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: 'var(--color-primary)',
+                        'primary-hover': 'var(--color-primary-hover)',
+                        danger: 'var(--color-danger)',
+                        secondary: 'var(--text-secondary)'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Space Grotesk', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body class="bg-black text-white selection:bg-primary/50 selection:text-white">
+
+    <!-- Preloader de Carregamento Premium (Aura Design System) -->
+    <div id="preloader"
+        class="fixed inset-0 z-[100] bg-black flex flex-col items-center justify-center pointer-events-auto">
+        <div class="flex flex-col items-center justify-center gap-4">
+            <!-- Brand Logo -->
+            <img src="https://res.cloudinary.com/dpt3zi8kx/image/upload/v1784515927/Captura_de_tela_2026-07-19_224146-removebg-preview_qbyei7.png" alt="Aura Shield Logo" class="h-16 w-auto object-contain">
+
+            <!-- Aura Styled Loader Component -->
+            <div
+                class="w-56 h-12 border border-stone-800 rounded-sm relative overflow-hidden flex items-center justify-center bg-stone-900/40 backdrop-blur-md">
+                <!-- Progress Indicator Bar -->
+                <div id="loader-progress"
+                    class="absolute inset-y-0 left-0 bg-[#384B80]/40 w-0 transition-all duration-300 ease-out"></div>
+
+                <span
+                    class="text-[10px] font-mono uppercase tracking-[0.25em] text-stone-300 z-10 flex items-center gap-2">
+                    INICIALIZANDO
+                    <iconify-icon icon="line-md:loading-loop" class="text-stone-300 text-xs"></iconify-icon>
+                </span>
+            </div>
+
+            <!-- Status Label -->
+            <span id="loader-status" class="text-[9px] font-mono uppercase tracking-[0.3em] text-stone-600">Aguardando
+                conexão...</span>
+        </div>
+    </div>
+
+    <!-- Navbar -->
+    <nav class="absolute top-0 w-full z-50 p-6 mix-blend-normal interactive">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <img src="https://res.cloudinary.com/dpt3zi8kx/image/upload/v1784515927/Captura_de_tela_2026-07-19_224146-removebg-preview_qbyei7.png" alt="Aura Shield Logo" class="h-14 w-auto object-contain">
+            </div>
+            <div class="hidden md:flex gap-8 text-sm font-medium text-white/90">
+                <a href="https://wa.me/5591983667171?text=Ol%C3%A1%21%20Vim%20pelo%20seu%20site.%20Gostaria%20de%20realizar%20um%20or%C3%A7amento%20de%20um%20CTV%20Avan%C3%A7ado."
+                    target="_blank" rel="noopener noreferrer" class="nav-glow-effect">CFTV</a>
+                <a href="https://wa.me/5591983667171?text=Ol%C3%A1%21%20Vim%20pelo%20seu%20site.%20Gostaria%20de%20realizar%20um%20or%C3%A7amento%20de%20um%20alarme%20inteligente."
+                    target="_blank" rel="noopener noreferrer" class="nav-glow-effect">Alarmes</a>
+                <a href="https://wa.me/5591983667171?text=Ol%C3%A1%21%20Vim%20pelo%20seu%20site.%20Gostaria%20de%20realizar%20um%20or%C3%A7amento%20de%20um%20rastreador%20de%20ve%C3%ADculo."
+                    target="_blank" rel="noopener noreferrer" class="nav-glow-effect">Rastreamento</a>
+            </div>
+            <a href="https://wa.me/5591983667171?text=Ol%C3%A1%2C%20tudo%20bem%3F" target="_blank"
+                rel="noopener noreferrer"
+                class="btn-whatsapp-shimmer px-5 py-2 rounded-full text-sm font-medium text-white transition-all duration-500 hover:shadow-[0_0_30px_rgba(37,211,102,0.8)] hover:-translate-y-1 inline-flex items-center justify-center">
+                Contatar Suporte
+            </a>
+        </div>
+    </nav>
+
+    <!-- Scroll Scrubbing Hero Section -->
+    <main id="hero-container">
+
+        <div id="video-pin">
+
+            <!-- Canvas para Image Sequence (Apple-style) -->
+            <canvas id="hero-canvas"></canvas>
+
+            <div class="video-gradient-mask"></div>
+
+            <div class="hero-ui w-full h-full">
+                <!-- Wrapper estendido com paddings diretos para colar o conteúdo na lateral esquerda -->
+                <div
+                    class="w-full h-full px-6 sm:px-10 md:px-16 lg:px-24 xl:px-32 flex items-center max-w-[1800px] mx-auto">
+                    <div class="flex flex-col items-start justify-center w-full md:w-3/5 lg:w-1/2 xl:w-[45%]">
+                        <div class="space-y-6">
+                            <div
+                                class="glass-surface inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-mono uppercase tracking-widest text-white gs-reveal">
+                                <span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+                                Próxima Geração
+                            </div>
+
+                            <h1
+                                class="text-5xl md:text-[5rem] lg:text-[5.5rem] min-[1500px]:text-[6.5rem] font-semibold tracking-tighter leading-[0.9] text-white text-glow">
+                                <span class="block split-line"><span
+                                        class="split-word text-primary-hover opacity-40 pb-[0.3em] -mb-[0.3em]">Vigilância</span></span>
+                                <span class="block split-line">
+                                    <span
+                                        class="split-word transparent-text cursor-crosshair pointer-events-auto">Avançada.</span>
+                                </span>
+                            </h1>
+
+                            <p
+                                class="text-base md:text-lg min-[1500px]:text-xl text-secondary max-w-md font-light leading-relaxed gs-reveal text-glow">
+                                Sistemas de segurança de ultra-precisão. Hardware autônomo desenhado para cobrir todos
+                                os ângulos.
+                            </p>
+
+                            <div class="pt-10 flex flex-col sm:flex-row items-center gap-8 interactive gs-reveal">
+                                <button
+                                    onclick="document.getElementById('services-section').scrollIntoView({ behavior: 'smooth' })"
+                                    class="beam-button bg-primary-hover text-white hover:bg-[#8ba9dc] px-6 py-3 min-[1500px]:px-8 min-[1500px]:py-4 rounded-full text-xs min-[1500px]:text-sm font-semibold uppercase tracking-wider transition-colors flex items-center justify-center gap-2 min-[1500px]:gap-3 group shadow-[0_0_30px_rgba(93,131,202,0.4)]">
+                                    Conhecer Serviços
+                                    <iconify-icon icon="solar:arrow-right-line-duotone"
+                                        class="text-lg group-hover:translate-x-1 transition-transform"></iconify-icon>
+                                </button>
+                                <a href="https://wa.me/5591983667171?text=Ol%C3%A1%21%20Vim%20pelo%20seu%20site.%20Gostaria%20de%20realizar%20um%20or%C3%A7amento."
+                                    target="_blank" rel="noopener noreferrer"
+                                    class="beam-button btn-glow-white flex items-center gap-2 px-4 py-2 -ml-4 min-[1500px]:px-5 min-[1500px]:py-2.5 min-[1500px]:-ml-5 rounded-full text-xs min-[1500px]:text-sm font-medium hover:text-white hover:bg-[#D33837] transition-all duration-500 hover:shadow-[0_0_30px_rgba(211,56,55,0.8)] hover:-translate-y-1 cursor-pointer">
+                                    <iconify-icon icon="solar:play-bold"></iconify-icon> Solicitar Orçamento
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-4 gs-reveal">
+                <div class="w-px h-8 min-[1500px]:h-16 bg-gradient-to-b from-white to-transparent"></div>
+                <span class="text-[10px] font-mono font-bold uppercase tracking-widest btn-glow-white">Rolar Para
+                    Baixo</span>
+            </div>
+
+        </div>
+    </main>
+
+
+    <!-- Nova Dobra: Trust Generation -->
+    <section id="trust-section"
+        class="relative z-20 bg-[#0A0A0A] border-t border-white/10 py-24 md:py-32 min-[1500px]:py-48 overflow-hidden flashlight-zone-dark flashlight-zone"
+        onmousemove="this.style.setProperty('--mouse-x', (event.clientX - this.getBoundingClientRect().left) + 'px'); this.style.setProperty('--mouse-y', (event.clientY - this.getBoundingClientRect().top) + 'px');">
+        <!-- Background Noise -->
+        <div class="absolute inset-0 opacity-[0.03] mix-blend-screen pointer-events-none z-0"
+            style="background-image: url('data:image/svg+xml;utf8,%3Csvg viewBox=\'0 0 200 200\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'noiseFilter\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.8\' numOctaves=\'3\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23noiseFilter)\'/%3E%3C/svg%3E');">
+        </div>
+
+        <div class="max-w-[1440px] mx-auto px-6 md:px-16 lg:px-24 relative z-10">
+            <div class="flex flex-col items-center text-center max-w-[1200px] mx-auto">
+
+                <!-- Conteúdo (Sem logo, simétrico e com entradas/saídas) -->
+                <div class="flex flex-col items-center w-full mb-12 md:mb-16 min-[1500px]:mb-24">
+                    <span
+                        class="reveal delay-100 text-[0.65rem] font-mono font-bold uppercase tracking-[0.2em] text-danger mb-6 min-[1500px]:mb-8 flex items-center justify-center gap-3 bg-white/5 py-2 px-4 rounded-full border border-white/10 shadow-[0_4px_20px_rgba(0,0,0,0.2)]">
+                        <span class="w-2 h-2 rounded-full bg-danger animate-pulse"></span> Sistema Ativo
+                    </span>
+                    <h2
+                        class="trust-title text-4xl md:text-5xl lg:text-6xl min-[1500px]:text-7xl font-extrabold tracking-tighter leading-tight text-white mb-6 min-[1500px]:mb-8">
+                        <span class="text-reveal-wrapper"><span class="text-reveal-content">Segurança que
+                                trabalha</span></span><br>
+                        <span class="text-reveal-wrapper"><span class="text-reveal-content delay-200 text-danger">24
+                                horas por você.</span></span>
+                    </h2>
+                    <p
+                        class="reveal delay-300 text-base md:text-lg min-[1500px]:text-xl text-secondary leading-relaxed max-w-2xl min-[1500px]:max-w-3xl font-light">
+                        Com mais de <span class="font-bold text-white">10 anos de mercado</span>, nossa equipe
+                        especializada garante um monitoramento contínuo e preventivo. Atendimento local com resposta
+                        rápida para que o seu patrimônio nunca fique desprotegido.
+                    </p>
+                </div>
+
+                <!-- Grid de Indicadores -->
+                <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 w-full">
+                    <!-- Stat 1 -->
+                    <div class="reveal delay-100 h-full w-full">
+                        <div
+                            class="p-6 md:p-8 min-[1500px]:p-10 rounded-none bg-white/5 border border-white/10 hover:bg-danger hover:border-danger transition-all duration-300 group relative overflow-hidden flex flex-col items-center justify-center text-center shadow-[0_15px_40px_rgba(0,0,0,0.2)] hover:-translate-y-2 h-full w-full">
+                            <iconify-icon icon="solar:users-group-two-rounded-bold-duotone"
+                                class="text-3xl md:text-4xl min-[1500px]:text-5xl text-white/50 mb-4 min-[1500px]:mb-6 group-hover:text-white transition-colors group-hover:scale-110 duration-300 relative z-10"></iconify-icon>
+                            <h3
+                                class="text-4xl md:text-5xl min-[1500px]:text-6xl font-extrabold text-white tracking-tighter mb-2 min-[1500px]:mb-3 relative z-10">
+                                +500</h3>
+                            <p
+                                class="text-[0.65rem] font-bold tracking-[0.2em] text-white/40 group-hover:text-white transition-colors duration-300 uppercase relative z-10">
+                                Clientes Atendidos</p>
+                        </div>
+                    </div>
+
+                    <!-- Stat 2 -->
+                    <div class="reveal delay-200 h-full w-full">
+                        <div
+                            class="p-6 md:p-8 min-[1500px]:p-10 rounded-none bg-white/5 border border-white/10 hover:bg-danger hover:border-danger transition-all duration-300 group relative overflow-hidden flex flex-col items-center justify-center text-center shadow-[0_15px_40px_rgba(0,0,0,0.2)] hover:-translate-y-2 h-full w-full">
+                            <iconify-icon icon="solar:camera-bold-duotone"
+                                class="text-3xl md:text-4xl min-[1500px]:text-5xl text-white/50 mb-4 min-[1500px]:mb-6 group-hover:text-white transition-colors group-hover:scale-110 duration-300 relative z-10"></iconify-icon>
+                            <h3
+                                class="text-4xl md:text-5xl min-[1500px]:text-6xl font-extrabold text-white tracking-tighter mb-2 min-[1500px]:mb-3 relative z-10">
+                                +3.000</h3>
+                            <p
+                                class="text-[0.65rem] font-bold tracking-[0.2em] text-white/40 group-hover:text-white transition-colors duration-300 uppercase relative z-10">
+                                Equipamentos Instalados</p>
+                        </div>
+                    </div>
+
+                    <!-- Stat 3 -->
+                    <div class="reveal delay-300 h-full w-full">
+                        <div
+                            class="p-6 md:p-8 min-[1500px]:p-10 rounded-none bg-white/5 border border-white/10 hover:bg-danger hover:border-danger transition-all duration-300 group relative overflow-hidden flex flex-col items-center justify-center text-center shadow-[0_15px_40px_rgba(0,0,0,0.2)] hover:-translate-y-2 h-full w-full">
+                            <iconify-icon icon="solar:history-bold-duotone"
+                                class="text-3xl md:text-4xl min-[1500px]:text-5xl text-white/50 mb-4 min-[1500px]:mb-6 group-hover:text-white transition-colors group-hover:scale-110 duration-300 relative z-10"></iconify-icon>
+                            <h3
+                                class="text-4xl md:text-5xl min-[1500px]:text-6xl font-extrabold text-white tracking-tighter mb-2 min-[1500px]:mb-3 relative z-10">
+                                24/7</h3>
+                            <p
+                                class="text-[0.65rem] font-bold tracking-[0.2em] text-white/40 group-hover:text-white transition-colors duration-300 uppercase relative z-10">
+                                Monitoramento Contínuo</p>
+                        </div>
+                    </div>
+
+                    <!-- Stat 4 -->
+                    <div class="reveal delay-500 h-full w-full">
+                        <div
+                            class="p-6 md:p-8 min-[1500px]:p-10 rounded-none bg-white/5 border border-white/10 hover:bg-danger hover:border-danger transition-all duration-300 group relative overflow-hidden flex flex-col items-center justify-center text-center shadow-[0_15px_40px_rgba(0,0,0,0.2)] hover:-translate-y-2 h-full w-full">
+                            <iconify-icon icon="solar:star-fall-minimalistic-2-bold-duotone"
+                                class="text-3xl md:text-4xl min-[1500px]:text-5xl text-white/50 mb-4 min-[1500px]:mb-6 group-hover:text-white transition-colors group-hover:scale-110 duration-300 relative z-10"></iconify-icon>
+                            <h3
+                                class="text-4xl md:text-5xl min-[1500px]:text-6xl font-extrabold text-white tracking-tighter mb-2 min-[1500px]:mb-3 relative z-10">
+                                98%</h3>
+                            <p
+                                class="text-[0.65rem] font-bold tracking-[0.2em] text-white/40 group-hover:text-white transition-colors duration-300 uppercase relative z-10">
+                                Satisfação Aprovada</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Nova Dobra: Clients Showcase (Vertical Timeline) -->
+    <section id="clients-showcase"
+        class="relative z-20 bg-[#F5F5F7] border-t border-stone-300 py-24 md:py-32 min-[1500px]:py-48 overflow-hidden">
+
+        <!-- Vignette Edge Gradients (Darker Edges) - Otimizado para não rodar filtros pesados no mobile -->
+        <!-- Left dark shadow gradient -->
+        <div
+            class="absolute inset-y-0 left-0 w-1/3 bg-gradient-to-r from-[#1D1D1F]/40 via-[#1D1D1F]/10 to-transparent pointer-events-none z-0 hidden md:block mix-blend-multiply">
+        </div>
+        <!-- Right dark shadow gradient -->
+        <div
+            class="absolute inset-y-0 right-0 w-1/3 bg-gradient-to-l from-[#1D1D1F]/40 via-[#1D1D1F]/10 to-transparent pointer-events-none z-0 hidden md:block mix-blend-multiply">
+        </div>
+        <!-- Top and Bottom subtle shadows -->
+        <div
+            class="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-[#1D1D1F]/30 to-transparent pointer-events-none z-0 hidden md:block mix-blend-multiply">
+        </div>
+        <div
+            class="absolute inset-x-0 bottom-0 h-48 bg-gradient-to-t from-[#1D1D1F]/30 to-transparent pointer-events-none z-0 hidden md:block mix-blend-multiply">
+        </div>
+
+        <!-- Deep Vignette Inset Shadow to wrap everything -->
+        <div
+            class="absolute inset-0 shadow-[inset_0_0_150px_rgba(29,29,31,0.15)] pointer-events-none z-0 hidden md:block">
+        </div>
+
+        <!-- Ambient Glows -->
+        <div
+            class="absolute top-1/4 left-0 w-[500px] h-[500px] bg-[#384B80]/30 rounded-full blur-[140px] pointer-events-none mix-blend-multiply opacity-60 z-0 hidden md:block">
+        </div>
+        <div
+            class="absolute bottom-1/4 right-0 w-[600px] h-[600px] bg-[#D33837]/20 rounded-full blur-[160px] pointer-events-none mix-blend-multiply opacity-60 z-0 hidden md:block">
+        </div>
+
+        <!-- Header -->
+        <div class="max-w-[1440px] mx-auto px-6 md:px-16 lg:px-24 relative z-10 mb-20 text-center">
+            <span class="text-xs font-mono uppercase text-[#384B80] tracking-widest block mb-4 gs-reveal font-bold">02.5
+                / Nossos Clientes</span>
+            <h2
+                class="text-4xl md:text-5xl lg:text-6xl min-[1500px]:text-7xl font-bold tracking-tighter text-[#1C1C1C] gs-reveal">
+                Empresas que confiam em<br>
+                <span class="text-transparent bg-clip-text bg-gradient-to-br from-[#1C1C1C] to-[#808080]">nosso
+                    trabalho.</span>
+            </h2>
+            <p
+                class="text-[#525252] mt-6 max-w-2xl mx-auto text-base md:text-lg min-[1500px]:text-xl font-light leading-relaxed gs-reveal">
+                Construindo soluções para marcas que exigem excelência.
+            </p>
+        </div>
+
+        <!-- Vertical Timeline Container -->
+        <div class="max-w-[1200px] mx-auto px-6 md:px-16 relative z-10 pb-32" id="timeline-container">
+
+            <!-- The Track -->
+            <div class="absolute top-0 bottom-0 left-6 md:left-1/2 w-px bg-stone-300 -translate-x-1/2"></div>
+
+            <!-- The Energy Line (Progress) - Sincronizado por Layout e Acelerado por GPU -->
+            <div class="absolute top-0 left-6 md:left-1/2 w-1 -translate-x-1/2 bg-gradient-to-b from-transparent via-[#D33837] to-[#D33837] shadow-[0_0_20px_rgba(211,56,55,0.8)]"
+                id="energy-line" style="height: 0%; will-change: height;">
+                <!-- The Glowing Node (Dentro da linha para sincronia perfeita e sem distorção) -->
+                <div class="absolute bottom-0 left-1/2 -translate-x-1/2 w-4 h-4 bg-[#D33837] rounded-full shadow-[0_0_20px_#D33837,0_0_10px_#D33837] animate-pulse"
+                    id="energy-node"></div>
+            </div>
+
+            <div class="flex flex-col gap-24 md:gap-40 pt-10">
+                <!-- Client 1 -->
+                <div
+                    class="client-card-wrapper relative flex flex-col md:flex-row items-center w-full justify-end md:justify-start">
+                    <div
+                        class="hidden md:block absolute top-1/2 left-1/2 w-[calc(50%-2rem)] h-px bg-gradient-to-r from-[#D33837]/50 to-transparent -translate-y-1/2 pointer-events-none opacity-0 connection-beam">
+                    </div>
+                    <div
+                        class="client-card w-full md:w-[45%] bg-[#384B80] rounded-2xl md:rounded-[2rem] p-8 md:p-12 relative overflow-hidden transition-all duration-700 ease-out opacity-40 scale-95 ml-12 md:ml-0 translate-z-0 border border-[#384B80]/20">
+                        <div class="relative z-30">
+                            <img src="https://res.cloudinary.com/dpt3zi8kx/image/upload/v1784517317/Captura_de_tela_2026-07-20_001216-removebg-preview_qdelwl.png"
+                                alt="Supermercados Líder"
+                                class="-ml-6 object-contain mb-3 client-logo brightness-0 invert opacity-40 transition-all duration-700"
+                                style="width: 220px; height: auto;">
+                            <span
+                                class="text-[10px] md:text-xs font-mono uppercase tracking-widest text-[#edf1fa] font-bold mb-4 block">CFTV
+                                Avançado</span>
+                            <p
+                                class="text-sm md:text-base min-[1500px]:text-lg text-white/90 font-light leading-relaxed">
+                                Infraestrutura massiva de videomonitoramento de alta resolução. Aplicação de
+                                inteligência de vídeo focada na prevenção de perdas e auditoria cirúrgica de processos
+                                logísticos.
+                            </p>
+                        </div>
+                        <div
+                            class="border-sweep absolute inset-0 rounded-inherit border border-white/0 pointer-events-none transition-colors duration-500">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Client 2 -->
+                <div class="client-card-wrapper relative flex flex-col md:flex-row items-center w-full justify-end">
+                    <div
+                        class="hidden md:block absolute top-1/2 right-1/2 w-[calc(50%-2rem)] h-px bg-gradient-to-l from-[#D33837]/50 to-transparent -translate-y-1/2 pointer-events-none opacity-0 connection-beam">
+                    </div>
+                    <div
+                        class="client-card w-full md:w-[45%] bg-[#384B80] rounded-2xl md:rounded-[2rem] p-8 md:p-12 relative overflow-hidden transition-all duration-700 ease-out opacity-40 scale-95 ml-12 md:ml-0 translate-z-0 border border-[#384B80]/20">
+                        <div class="relative z-30">
+                            <img src="https://res.cloudinary.com/dpt3zi8kx/image/upload/v1784554499/Captura_de_tela_2026-07-20_103058-removebg-preview_sgpepe.png"
+                                alt="Colégio Vicente Costa"
+                                class="-ml-6 object-contain mb-8 client-logo brightness-0 invert opacity-40 transition-all duration-700"
+                                style="width: 220px; height: auto;">
+                            <span
+                                class="text-[10px] md:text-xs font-mono uppercase tracking-widest text-[#edf1fa] font-bold mb-4 block">CFTV
+                                e Alarmes</span>
+                            <p
+                                class="text-sm md:text-base min-[1500px]:text-lg text-white/90 font-light leading-relaxed">
+                                Blindagem integral do ambiente acadêmico. Implementação de cercos perimetrais
+                                responsivos e análise de fluxo, criando um escudo invisível para alunos e colaboradores.
+                            </p>
+                        </div>
+                        <div
+                            class="border-sweep absolute inset-0 rounded-inherit border border-white/0 pointer-events-none transition-colors duration-500">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Client 3 -->
+                <div
+                    class="client-card-wrapper relative flex flex-col md:flex-row items-center w-full justify-end md:justify-start">
+                    <div
+                        class="hidden md:block absolute top-1/2 left-1/2 w-[calc(50%-2rem)] h-px bg-gradient-to-r from-[#D33837]/50 to-transparent -translate-y-1/2 pointer-events-none opacity-0 connection-beam">
+                    </div>
+                    <div
+                        class="client-card w-full md:w-[45%] bg-[#384B80] rounded-2xl md:rounded-[2rem] p-8 md:p-12 relative overflow-hidden transition-all duration-700 ease-out opacity-40 scale-95 ml-12 md:ml-0 translate-z-0 border border-[#384B80]/20">
+                        <div class="relative z-30">
+                            <img src="https://res.cloudinary.com/dpt3zi8kx/image/upload/v1784517329/Captura_de_tela_2026-07-20_001235-removebg-preview_r9hftu.png"
+                                alt="Meio a Meio"
+                                class="-ml-6 object-contain mb-8 client-logo brightness-0 invert opacity-40 transition-all duration-700"
+                                style="width: 240px; height: auto;">
+                            <span
+                                class="text-[10px] md:text-xs font-mono uppercase tracking-widest text-[#edf1fa] font-bold mb-4 block">CFTV
+                                e Alarmes</span>
+                            <p
+                                class="text-sm md:text-base min-[1500px]:text-lg text-white/90 font-light leading-relaxed">
+                                Sistema unificado de detecção de intrusões. Telemetria de imagens operando em missão
+                                crítica 24/7 para neutralizar riscos em zonas de altíssimo tráfego de varejo.
+                            </p>
+                        </div>
+                        <div
+                            class="border-sweep absolute inset-0 rounded-inherit border border-white/0 pointer-events-none transition-colors duration-500">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Client 4 -->
+                <div class="client-card-wrapper relative flex flex-col md:flex-row items-center w-full justify-end">
+                    <div
+                        class="hidden md:block absolute top-1/2 right-1/2 w-[calc(50%-2rem)] h-px bg-gradient-to-l from-[#D33837]/50 to-transparent -translate-y-1/2 pointer-events-none opacity-0 connection-beam">
+                    </div>
+                    <div
+                        class="client-card w-full md:w-[45%] bg-[#384B80] rounded-2xl md:rounded-[2rem] p-8 md:p-12 relative overflow-hidden transition-all duration-700 ease-out opacity-40 scale-95 ml-12 md:ml-0 translate-z-0 border border-[#384B80]/20">
+                        <div class="relative z-30">
+                            <img src="https://res.cloudinary.com/dpt3zi8kx/image/upload/v1784517329/Captura_de_tela_2026-07-20_001356-removebg-preview_t8fiex.png"
+                                alt="Colina"
+                                class="-ml-6 object-contain mb-8 client-logo brightness-0 invert opacity-40 transition-all duration-700"
+                                style="width: 200px; height: auto;">
+                            <span
+                                class="text-[10px] md:text-xs font-mono uppercase tracking-widest text-[#edf1fa] font-bold mb-4 block">Barreiras
+                                de Alta Tensão</span>
+                            <p
+                                class="text-sm md:text-base min-[1500px]:text-lg text-white/90 font-light leading-relaxed">
+                                Eletrificação perimetral tática. Fusão de barreiras de alta tensão com sensores
+                                volumétricos criptografados, garantindo resposta imediata contra violações físicas.
+                            </p>
+                        </div>
+                        <div
+                            class="border-sweep absolute inset-0 rounded-inherit border border-white/0 pointer-events-none transition-colors duration-500">
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Terceira Dobra: Serviços -->
+    <section id="services-section"
+        class="relative z-20 bg-[#000000] border-t border-white/10 pt-24 md:pt-32 min-[1500px]:pt-48 pb-20 overflow-hidden">
+
+        <!-- Header da Seção -->
+        <div class="max-w-[1440px] mx-auto px-6 md:px-16 lg:px-24 relative z-10 mb-16 md:mb-20">
+            <div class="flex items-center gap-4 mb-4 gs-reveal">
+                <span class="text-xs font-mono uppercase text-white/50 tracking-widest">03 / Soluções</span>
+                <div class="h-px bg-white/20 flex-1 max-w-[100px]"></div>
+            </div>
+            <h2
+                class="text-4xl md:text-5xl lg:text-6xl min-[1500px]:text-7xl font-medium tracking-tight text-white trust-title">
+                <span class="text-reveal-wrapper"><span
+                        class="text-reveal-content font-serif italic text-white/70">Sistemas de</span></span><br>
+                <span class="text-reveal-wrapper"><span class="text-reveal-content delay-200">Alta
+                        Precisão.</span></span>
+            </h2>
+            <p
+                class="text-secondary mt-6 max-w-2xl text-base md:text-lg min-[1500px]:text-xl font-light leading-relaxed reveal delay-300">
+                Desenvolvemos infraestruturas de segurança responsivas. Cada serviço é uma camada de inteligência
+                projetada para operar com máxima eficiência e mínimo atrito.
+            </p>
+        </div>
+
+        <!-- Carousel -->
+        <div id="services-carousel"
+            class="flex flex-row overflow-visible md:overflow-visible snap-none md:snap-none hide-scrollbar w-max md:w-max px-6 md:px-16 lg:px-24 gap-6 md:gap-10 pb-4 scroll-auto md:scroll-auto"
+            style="mask-image: linear-gradient(90deg, transparent 0%, black 5%, black 95%, transparent 100%); -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 5%, black 95%, transparent 100%);">
+
+            <!-- Card 1: CFTV -->
+            <div
+                class="tilt-card flex-shrink-0 w-[85vw] md:w-[300px] lg:w-[350px] min-[1500px]:w-[600px] aspect-[4/5] min-[1500px]:aspect-[3/4] bg-[#0A0A0A] rounded-2xl min-[1500px]:rounded-[2rem] border border-white/5 relative flex flex-col overflow-hidden snap-center group cursor-crosshair">
+                <div class="card-glow"></div>
+                <div class="border-beam"></div>
+                <!-- Background visual -->
+                <div
+                    class="absolute inset-0 bg-[url('assets/images/services/cctv_abstract.png')] bg-cover bg-center opacity-40 group-hover:opacity-70 group-hover:saturate-[5] transition-all duration-700 pointer-events-none">
+                </div>
+                <div
+                    class="absolute inset-0 bg-gradient-to-t from-[#0A0A0A] via-[#0A0A0A]/80 to-transparent pointer-events-none">
+                </div>
+                <div class="absolute inset-0 opacity-20 group-hover:opacity-40 transition-opacity duration-700 pointer-events-none"
+                    style="background-image: linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px); background-size: 40px 40px;">
+                </div>
+                <div
+                    class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none">
+                    <div class="scanner-line"></div>
+                </div>
+
+                <div class="p-8 min-[1500px]:p-12 h-full flex flex-col z-10 relative tilt-content">
+                    <header class="flex justify-between items-start mb-auto">
+                        <span
+                            class="font-mono text-[10px] md:text-xs text-primary uppercase tracking-widest font-bold bg-primary/10 px-3 py-1 rounded-full border border-primary/20">[01/04]</span>
+                        <div
+                            class="w-12 h-12 rounded-full bg-white/5 border border-white/10 flex items-center justify-center backdrop-blur-md group-hover:scale-110 group-hover:bg-primary transition-all duration-500 shadow-[0_0_20px_rgba(56,75,128,0)] group-hover:shadow-[0_0_20px_rgba(56,75,128,0.6)]">
+                            <iconify-icon icon="solar:videocamera-record-bold-duotone"
+                                class="text-2xl text-white group-hover:animate-pulse"></iconify-icon>
+                        </div>
+                    </header>
+                    <div class="mt-auto">
+                        <h3
+                            class="text-3xl lg:text-4xl min-[1500px]:text-5xl font-semibold tracking-tighter text-white mb-3 min-[1500px]:mb-4 group-hover:translate-x-2 transition-transform duration-500">
+                            CFTV Avançado</h3>
+                        <p
+                            class="text-sm min-[1500px]:text-base text-secondary font-light leading-relaxed max-w-sm group-hover:translate-x-2 transition-transform duration-500 delay-75">
+                            Monitoramento em altíssima resolução com inteligência artificial embarcada para detecção
+                            proativa de anomalias.
+                        </p>
+                        <a href="https://wa.me/5591983667171?text=Ol%C3%A1%21%20Vim%20pelo%20seu%20site.%20Gostaria%20de%20realizar%20um%20or%C3%A7amento%20de%20um%20CFTV%20Avan%C3%A7ado."
+                            target="_blank" rel="noopener noreferrer"
+                            class="mt-6 min-[1500px]:mt-8 beam-button w-full flex items-center justify-between rounded-full border border-white/10 bg-white/5 p-1.5 pl-6 text-xs min-[1500px]:text-sm font-medium text-white backdrop-blur-md transition-all duration-500 hover:bg-primary hover:border-primary hover:shadow-[0_0_20px_rgba(56,75,128,0.6)] group/btn group-hover:translate-x-2 delay-100">
+                            <span class="tracking-wide">Solicitar Orçamento</span>
+                            <div
+                                class="w-8 h-8 min-[1500px]:w-10 min-[1500px]:h-10 rounded-full bg-white/10 flex items-center justify-center group-hover/btn:bg-white group-hover/btn:text-primary transition-all duration-500">
+                                <iconify-icon icon="solar:arrow-right-line-duotone"
+                                    class="text-sm min-[1500px]:text-base group-hover/btn:translate-x-0.5 transition-transform"></iconify-icon>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 2: Alarmes -->
+            <div
+                class="tilt-card flex-shrink-0 w-[85vw] md:w-[300px] lg:w-[350px] min-[1500px]:w-[600px] aspect-[4/5] min-[1500px]:aspect-[3/4] bg-[#0A0A0A] rounded-2xl min-[1500px]:rounded-[2rem] border border-white/5 relative flex flex-col overflow-hidden snap-center group cursor-crosshair">
+                <div class="card-glow"></div>
+                <div class="border-beam"></div>
+                <!-- Background visual -->
+                <div
+                    class="absolute inset-0 bg-[url('assets/images/services/alarm_abstract.png')] bg-cover bg-center opacity-40 group-hover:opacity-70 group-hover:saturate-[5] transition-all duration-700 pointer-events-none">
+                </div>
+                <div
+                    class="absolute inset-0 bg-gradient-to-t from-[#0A0A0A] via-[#0A0A0A]/80 to-transparent pointer-events-none">
+                </div>
+                <div class="absolute inset-0 opacity-10 group-hover:opacity-30 transition-opacity duration-700 pointer-events-none"
+                    style="background: radial-gradient(circle at center, transparent 0%, #0A0A0A 80%), repeating-radial-gradient(circle at center, rgba(211,56,55,0.2) 0, rgba(211,56,55,0.2) 1px, transparent 1px, transparent 100%); background-size: 100% 100%, 40px 40px;">
+                </div>
+                <div
+                    class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none">
+                    <div class="pulse-ring" style="animation-delay: 0s;"></div>
+                    <div class="pulse-ring" style="animation-delay: 0.6s;"></div>
+                </div>
+
+                <div class="p-8 min-[1500px]:p-12 h-full flex flex-col z-10 relative tilt-content">
+                    <header class="flex justify-between items-start mb-auto">
+                        <span
+                            class="font-mono text-[10px] md:text-xs text-danger uppercase tracking-widest font-bold bg-danger/10 px-3 py-1 rounded-full border border-danger/20">[02/04]</span>
+                        <div
+                            class="w-12 h-12 rounded-full bg-white/5 border border-white/10 flex items-center justify-center backdrop-blur-md group-hover:scale-110 group-hover:bg-danger transition-all duration-500 shadow-[0_0_20px_rgba(147,34,34,0)] group-hover:shadow-[0_0_20px_rgba(147,34,34,0.6)]">
+                            <iconify-icon icon="solar:bell-bing-bold-duotone"
+                                class="text-2xl text-white group-hover:animate-bounce"></iconify-icon>
+                        </div>
+                    </header>
+                    <div class="mt-auto">
+                        <h3
+                            class="text-3xl lg:text-4xl min-[1500px]:text-5xl font-semibold tracking-tighter text-white mb-3 min-[1500px]:mb-4 group-hover:translate-x-2 transition-transform duration-500">
+                            Alarmes Inteligentes</h3>
+                        <p
+                            class="text-sm min-[1500px]:text-base text-secondary font-light leading-relaxed max-w-sm group-hover:translate-x-2 transition-transform duration-500 delay-75">
+                            Sensores perimetrais e volumétricos interconectados. Resposta instantânea e envio de alertas
+                            criptografados.
+                        </p>
+                        <a href="https://wa.me/5591983667171?text=Ol%C3%A1%21%20Vim%20pelo%20seu%20site.%20Gostaria%20de%20realizar%20um%20or%C3%A7amento%20de%20um%20alarme%20inteligente."
+                            target="_blank" rel="noopener noreferrer"
+                            class="mt-6 min-[1500px]:mt-8 beam-button w-full flex items-center justify-between rounded-full border border-white/10 bg-white/5 p-1.5 pl-6 text-xs min-[1500px]:text-sm font-medium text-white backdrop-blur-md transition-all duration-500 hover:bg-danger hover:border-danger hover:shadow-[0_0_20px_rgba(147,34,34,0.6)] group/btn group-hover:translate-x-2 delay-100">
+                            <span class="tracking-wide">Solicitar Orçamento</span>
+                            <div
+                                class="w-8 h-8 min-[1500px]:w-10 min-[1500px]:h-10 rounded-full bg-white/10 flex items-center justify-center group-hover/btn:bg-white group-hover/btn:text-danger transition-all duration-500">
+                                <iconify-icon icon="solar:arrow-right-line-duotone"
+                                    class="text-sm min-[1500px]:text-base group-hover/btn:translate-x-0.5 transition-transform"></iconify-icon>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 3: Rastreamento -->
+            <div
+                class="tilt-card flex-shrink-0 w-[85vw] md:w-[300px] lg:w-[350px] min-[1500px]:w-[600px] aspect-[4/5] min-[1500px]:aspect-[3/4] bg-[#0A0A0A] rounded-2xl min-[1500px]:rounded-[2rem] border border-white/5 relative flex flex-col overflow-hidden snap-center group cursor-crosshair">
+                <div class="card-glow"></div>
+                <div class="border-beam"></div>
+                <!-- Background visual -->
+                <div
+                    class="absolute inset-0 bg-[url('assets/images/services/tracking_abstract.png')] bg-cover bg-center opacity-40 group-hover:opacity-70 group-hover:saturate-[5] transition-all duration-700 pointer-events-none">
+                </div>
+                <div
+                    class="absolute inset-0 bg-gradient-to-t from-[#0A0A0A] via-[#0A0A0A]/80 to-transparent pointer-events-none">
+                </div>
+                <div
+                    class="absolute inset-0 opacity-10 group-hover:opacity-40 transition-opacity duration-700 pointer-events-none">
+                    <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <pattern id="dotGrid" width="30" height="30" patternUnits="userSpaceOnUse">
+                                <circle cx="2" cy="2" r="1" fill="#fff" />
+                            </pattern>
+                        </defs>
+                        <rect width="100%" height="100%" fill="url(#dotGrid)" />
+                    </svg>
+                </div>
+                <div
+                    class="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none overflow-hidden">
+                    <div class="tracking-dot" style="top:30%; left:20%;"></div>
+                    <div class="tracking-dot" style="top:60%; left:70%; animation-duration: 6s;"></div>
+                    <div class="tracking-dot" style="top:80%; left:40%; animation-duration: 3s; animation-delay: 1s;">
+                    </div>
+                </div>
+
+                <div class="p-8 min-[1500px]:p-12 h-full flex flex-col z-10 relative tilt-content">
+                    <header class="flex justify-between items-start mb-auto">
+                        <span
+                            class="font-mono text-[10px] md:text-xs text-white uppercase tracking-widest font-bold bg-white/10 px-3 py-1 rounded-full border border-white/20">[03/04]</span>
+                        <div
+                            class="w-12 h-12 rounded-full bg-white/5 border border-white/10 flex items-center justify-center backdrop-blur-md group-hover:scale-110 group-hover:bg-white group-hover:text-black transition-all duration-500 shadow-[0_0_20px_rgba(255,255,255,0)] group-hover:shadow-[0_0_20px_rgba(255,255,255,0.6)]">
+                            <iconify-icon icon="solar:map-point-wave-bold-duotone"
+                                class="text-2xl text-current"></iconify-icon>
+                        </div>
+                    </header>
+                    <div class="mt-auto">
+                        <h3
+                            class="text-3xl lg:text-4xl min-[1500px]:text-5xl font-semibold tracking-tighter text-white mb-3 min-[1500px]:mb-4 group-hover:translate-x-2 transition-transform duration-500">
+                            Rastreamento 24h</h3>
+                        <p
+                            class="text-sm min-[1500px]:text-base text-secondary font-light leading-relaxed max-w-sm group-hover:translate-x-2 transition-transform duration-500 delay-75">
+                            Telemetria avançada para frotas e veículos particulares. Acompanhamento em tempo real com
+                            precisão satelital.
+                        </p>
+                        <a href="https://wa.me/5591983667171?text=Ol%C3%A1%21%20Vim%20pelo%20seu%20site.%20Gostaria%20de%20realizar%20um%20or%C3%A7amento%20de%20um%20rastreador%20de%20ve%C3%ADculo."
+                            target="_blank" rel="noopener noreferrer"
+                            class="mt-6 min-[1500px]:mt-8 beam-button w-full flex items-center justify-between rounded-full border border-white/10 bg-white/5 p-1.5 pl-6 text-xs min-[1500px]:text-sm font-medium text-white backdrop-blur-md transition-all duration-500 hover:bg-white hover:text-black hover:shadow-[0_0_20px_rgba(255,255,255,0.6)] group/btn group-hover:translate-x-2 delay-100">
+                            <span class="tracking-wide">Solicitar Orçamento</span>
+                            <div
+                                class="w-8 h-8 min-[1500px]:w-10 min-[1500px]:h-10 rounded-full bg-white/10 flex items-center justify-center group-hover/btn:bg-black group-hover/btn:text-white transition-all duration-500">
+                                <iconify-icon icon="solar:arrow-right-line-duotone"
+                                    class="text-sm min-[1500px]:text-base group-hover/btn:translate-x-0.5 transition-transform"></iconify-icon>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 4: Cerca Elétrica -->
+            <div
+                class="tilt-card flex-shrink-0 w-[85vw] md:w-[300px] lg:w-[350px] min-[1500px]:w-[600px] aspect-[4/5] min-[1500px]:aspect-[3/4] bg-[#0A0A0A] rounded-2xl min-[1500px]:rounded-[2rem] border border-white/5 relative flex flex-col overflow-hidden snap-center group cursor-crosshair">
+                <div class="card-glow"></div>
+                <div class="border-beam"></div>
+                <!-- Background visual -->
+                <div
+                    class="absolute inset-0 bg-[url('assets/images/services/electric_abstract.png')] bg-cover bg-center opacity-40 group-hover:opacity-70 group-hover:saturate-[5] transition-all duration-700 pointer-events-none">
+                </div>
+                <div
+                    class="absolute inset-0 bg-gradient-to-t from-[#0A0A0A] via-[#0A0A0A]/80 to-transparent pointer-events-none">
+                </div>
+                <div
+                    class="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none">
+                    <div
+                        class="absolute top-1/4 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-primary to-transparent shadow-[0_0_15px_var(--color-primary)] opacity-50">
+                    </div>
+                    <div
+                        class="absolute top-2/4 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-primary to-transparent shadow-[0_0_15px_var(--color-primary)] opacity-80">
+                    </div>
+                    <div
+                        class="absolute top-3/4 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-primary to-transparent shadow-[0_0_15px_var(--color-primary)] opacity-50">
+                    </div>
+                </div>
+
+                <div class="p-8 min-[1500px]:p-12 h-full flex flex-col z-10 relative tilt-content">
+                    <header class="flex justify-between items-start mb-auto">
+                        <span
+                            class="font-mono text-[10px] md:text-xs text-[#5d83ca] uppercase tracking-widest font-bold bg-[#5d83ca]/10 px-3 py-1 rounded-full border border-[#5d83ca]/20">[04/04]</span>
+                        <div
+                            class="w-12 h-12 rounded-full bg-white/5 border border-white/10 flex items-center justify-center backdrop-blur-md group-hover:scale-110 group-hover:bg-[#5d83ca] transition-all duration-500 shadow-[0_0_20px_rgba(93,131,202,0)] group-hover:shadow-[0_0_20px_rgba(93,131,202,0.6)]">
+                            <iconify-icon icon="solar:bolt-bold-duotone" class="text-2xl text-white"></iconify-icon>
+                        </div>
+                    </header>
+                    <div class="mt-auto">
+                        <h3
+                            class="text-3xl lg:text-4xl min-[1500px]:text-5xl font-semibold tracking-tighter text-white mb-3 min-[1500px]:mb-4 group-hover:translate-x-2 transition-transform duration-500">
+                            Barreiras de Alta Tensão</h3>
+                        <p
+                            class="text-sm min-[1500px]:text-base text-secondary font-light leading-relaxed max-w-sm group-hover:translate-x-2 transition-transform duration-500 delay-75">
+                            Sistemas de eletrificação defensiva com controle de amperagem inteligente e design discreto
+                            para propriedades premium.
+                        </p>
+                        <a href="https://wa.me/5591983667171?text=Ol%C3%A1%21%20Vim%20pelo%20seu%20site.%20Gostaria%20de%20realizar%20um%20or%C3%A7amento%20de%20uma%20barreira%20de%20alta%20tens%C3%A3o."
+                            target="_blank" rel="noopener noreferrer"
+                            class="mt-6 min-[1500px]:mt-8 beam-button w-full flex items-center justify-between rounded-full border border-white/10 bg-white/5 p-1.5 pl-6 text-xs min-[1500px]:text-sm font-medium text-white backdrop-blur-md transition-all duration-500 hover:bg-[#5d83ca] hover:border-[#5d83ca] hover:shadow-[0_0_20px_rgba(93,131,202,0.6)] group/btn group-hover:translate-x-2 delay-100">
+                            <span class="tracking-wide">Solicitar Orçamento</span>
+                            <div
+                                class="w-8 h-8 min-[1500px]:w-10 min-[1500px]:h-10 rounded-full bg-white/10 flex items-center justify-center group-hover/btn:bg-white group-hover/btn:text-[#5d83ca] transition-all duration-500">
+                                <iconify-icon icon="solar:arrow-right-line-duotone"
+                                    class="text-sm min-[1500px]:text-base group-hover/btn:translate-x-0.5 transition-transform"></iconify-icon>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Carousel Navigation Indicator -->
+        <div class="flex flex-col items-center justify-center gap-3 mt-2 mb-6 reveal delay-500 pointer-events-none">
+            <!-- Desktop Indicator (Scroll Animation) -->
+            <div class="hidden md:flex flex-col items-center gap-3">
+                <div class="flex items-center gap-2 font-mono text-[10px] text-white/50 tracking-widest uppercase">
+                    <span
+                        class="flex items-center justify-center w-6 h-6 rounded border border-white/10 bg-white/5 shadow-inner animate-pulse font-sans font-bold text-sm select-none">
+                        <iconify-icon icon="solar:mouse-minimalistic-linear"></iconify-icon>
+                    </span>
+                </div>
+                <span class="text-[10px] font-mono uppercase tracking-[0.2em] text-white/40 select-none">Role o scroll
+                    para navegar</span>
+            </div>
+
+            <!-- Mobile Indicator (Swipe Swipe Animation) -->
+            <div class="flex md:hidden flex-col items-center gap-2.5">
+                <div class="relative w-24 h-4 flex items-center justify-center">
+                    <div class="absolute w-12 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
+                    <div
+                        class="absolute w-1.5 h-1.5 rounded-full bg-primary-hover animate-swipe shadow-[0_0_8px_rgba(93,131,202,0.8)]">
+                    </div>
+                </div>
+                <span class="text-[10px] font-mono uppercase tracking-[0.2em] text-white/40 select-none">Arrastar para o
+                    lado</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Quinta Dobra: FAQ (Dúvidas Frequentes) -->
+    <section id="faq-section"
+        class="min-h-screen bg-[#F5F5F7] flex items-center justify-center relative z-20 border-t border-stone-300 py-24 md:py-32 overflow-hidden">
+
+        <!-- Vignette Edge Gradients (Darker Edges) -->
+        <!-- Left dark shadow gradient -->
+        <div
+            class="absolute inset-y-0 left-0 w-1/3 bg-gradient-to-r from-[#1D1D1F]/40 via-[#1D1D1F]/10 to-transparent pointer-events-none z-0 mix-blend-multiply">
+        </div>
+        <!-- Right dark shadow gradient -->
+        <div
+            class="absolute inset-y-0 right-0 w-1/3 bg-gradient-to-l from-[#1D1D1F]/40 via-[#1D1D1F]/10 to-transparent pointer-events-none z-0 mix-blend-multiply">
+        </div>
+
+        <div class="max-w-[1440px] mx-auto px-6 md:px-16 lg:px-24 relative z-10 w-full">
+            <div class="grid grid-cols-12 gap-8 lg:gap-16 items-start">
+
+                <!-- Left: Header content -->
+                <div class="col-span-12 lg:col-span-5 flex flex-col justify-start lg:pr-12">
+                    <span
+                        class="text-xs font-mono uppercase text-[#384B80] tracking-widest block mb-4 gs-reveal font-bold">04
+                        / FAQ</span>
+                    <h2
+                        class="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tighter text-[#1C1C1C] mb-6 trust-title">
+                        <span class="text-reveal-wrapper"><span class="text-reveal-content">Perguntas</span></span><br>
+                        <span class="text-reveal-wrapper"><span
+                                class="text-reveal-content delay-200 text-transparent bg-clip-text bg-gradient-to-br from-[#1C1C1C] to-[#808080]">Frequentes.</span></span>
+                    </h2>
+                    <p class="text-[#525252] text-base md:text-lg font-light leading-relaxed reveal delay-300 max-w-md">
+                        Esclareça suas principais dúvidas sobre nossa infraestrutura de segurança inteligente e descubra
+                        como protegemos seu patrimônio com máxima precisão.
+                    </p>
+                </div>
+
+                <!-- Right: Accordion component -->
+                <div class="col-span-12 lg:col-span-7 flex flex-col gap-4">
+                    <!-- FAQ Item 1 -->
+                    <div class="faq-item faq-flashlight-card rounded-2xl p-6 md:p-8 cursor-pointer relative overflow-hidden reveal delay-100"
+                        onclick="toggleFaq(this)">
+                        <div class="relative z-10 flex justify-between items-center w-full select-none">
+                            <h3
+                                class="text-base md:text-lg font-semibold tracking-tight text-[#1C1C1C] transition-colors duration-300">
+                                Como funciona o sistema de CFTV Avançado com Inteligência Artificial?
+                            </h3>
+                            <iconify-icon icon="solar:add-circle-linear"
+                                class="text-2xl text-[#384B80] faq-icon flex-shrink-0 ml-4"></iconify-icon>
+                        </div>
+                        <div
+                            class="grid grid-rows-[0fr] transition-all duration-500 ease-out faq-content relative z-10">
+                            <div class="overflow-hidden">
+                                <p class="text-sm md:text-base text-[#525252] font-light leading-relaxed pt-4 pr-6">
+                                    O CFTV Avançado utiliza algoritmos inteligentes integrados diretamente nas câmeras
+                                    para detectar comportamentos suspeitos e anomalias em tempo real. Em vez de apenas
+                                    gravar imagens, o sistema age preventivamente, disparando alertas automáticos à
+                                    central quando uma invasão ou padrão incorreto é identificado.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- FAQ Item 2 -->
+                    <div class="faq-item faq-flashlight-card rounded-2xl p-6 md:p-8 cursor-pointer relative overflow-hidden reveal delay-200"
+                        onclick="toggleFaq(this)">
+                        <div class="relative z-10 flex justify-between items-center w-full select-none">
+                            <h3
+                                class="text-base md:text-lg font-semibold tracking-tight text-[#1C1C1C] transition-colors duration-300">
+                                Quais são os diferenciais dos Alarmes Inteligentes em relação aos alarmes convencionais?
+                            </h3>
+                            <iconify-icon icon="solar:add-circle-linear"
+                                class="text-2xl text-[#384B80] faq-icon flex-shrink-0 ml-4"></iconify-icon>
+                        </div>
+                        <div
+                            class="grid grid-rows-[0fr] transition-all duration-500 ease-out faq-content relative z-10">
+                            <div class="overflow-hidden">
+                                <p class="text-sm md:text-base text-[#525252] font-light leading-relaxed pt-4 pr-6">
+                                    Nossos alarmes utilizam sensores perimetrais e volumétricos interconectados com
+                                    criptografia de ponta a ponta. Isso impede tentativas de sabotagem física ou
+                                    digital. A resposta é instantânea e o sistema envia notificações imediatas direto
+                                    para o seu dispositivo móvel, além de acionar nossa central automatizada.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- FAQ Item 3 -->
+                    <div class="faq-item faq-flashlight-card rounded-2xl p-6 md:p-8 cursor-pointer relative overflow-hidden reveal delay-300"
+                        onclick="toggleFaq(this)">
+                        <div class="relative z-10 flex justify-between items-center w-full select-none">
+                            <h3
+                                class="text-base md:text-lg font-semibold tracking-tight text-[#1C1C1C] transition-colors duration-300">
+                                O Rastreamento 24h funciona em áreas remotas ou com baixa cobertura de sinal?
+                            </h3>
+                            <iconify-icon icon="solar:add-circle-linear"
+                                class="text-2xl text-[#384B80] faq-icon flex-shrink-0 ml-4"></iconify-icon>
+                        </div>
+                        <div
+                            class="grid grid-rows-[0fr] transition-all duration-500 ease-out faq-content relative z-10">
+                            <div class="overflow-hidden">
+                                <p class="text-sm md:text-base text-[#525252] font-light leading-relaxed pt-4 pr-6">
+                                    Sim. Nossa telemetria avançada combina posicionamento por satélite de alta precisão
+                                    com chips multi-operadora. Caso o sinal de celular fique indisponível, o módulo
+                                    interno armazena os dados de localização e trajeto na memória flash e os transmite
+                                    de forma prioritária assim que reestabelecida a conexão.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- FAQ Item 4 -->
+                    <div class="faq-item faq-flashlight-card rounded-2xl p-6 md:p-8 cursor-pointer relative overflow-hidden reveal delay-500"
+                        onclick="toggleFaq(this)">
+                        <div class="relative z-10 flex justify-between items-center w-full select-none">
+                            <h3
+                                class="text-base md:text-lg font-semibold tracking-tight text-[#1C1C1C] transition-colors duration-300">
+                                As Barreiras de Alta Tensão são seguras para animais de estimação?
+                            </h3>
+                            <iconify-icon icon="solar:add-circle-linear"
+                                class="text-2xl text-[#384B80] faq-icon flex-shrink-0 ml-4"></iconify-icon>
+                        </div>
+                        <div
+                            class="grid grid-rows-[0fr] transition-all duration-500 ease-out faq-content relative z-10">
+                            <div class="overflow-hidden">
+                                <p class="text-sm md:text-base text-[#525252] font-light leading-relaxed pt-4 pr-6">
+                                    Sim. Nossos sistemas de eletrificação tática utilizam choque pulsativo de alta
+                                    tensão e baixa amperagem (choque não letal). Além disso, eles contam com controle
+                                    inteligente de amperagem e sensores de corte ou aterramento, disparando o alarme
+                                    silencioso imediatamente se houver contato físico duradouro ou tentativa de
+                                    sabotagem na barreira, sem risco à vida.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- FAQ Item 5 -->
+                    <div class="faq-item faq-flashlight-card rounded-2xl p-6 md:p-8 cursor-pointer relative overflow-hidden reveal delay-700"
+                        onclick="toggleFaq(this)">
+                        <div class="relative z-10 flex justify-between items-center w-full select-none">
+                            <h3
+                                class="text-base md:text-lg font-semibold tracking-tight text-[#1C1C1C] transition-colors duration-300">
+                                Posso unificar o CFTV, os Alarmes e as Barreiras em um único painel?
+                            </h3>
+                            <iconify-icon icon="solar:add-circle-linear"
+                                class="text-2xl text-[#384B80] faq-icon flex-shrink-0 ml-4"></iconify-icon>
+                        </div>
+                        <div
+                            class="grid grid-rows-[0fr] transition-all duration-500 ease-out faq-content relative z-10">
+                            <div class="overflow-hidden">
+                                <p class="text-sm md:text-base text-[#525252] font-light leading-relaxed pt-4 pr-6">
+                                    Absolutamente. Toda a infraestrutura da Aura Shield foi desenhada sob o conceito de
+                                    Integração Universal. Você pode monitorar suas câmeras, ativar barreiras defensivas,
+                                    verificar o status dos alarmes e rastrear veículos a partir de uma interface
+                                    unificada e intuitiva, com dados criptografados em tempo real.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Sexta Dobra: Testemunhos (Carrossel de Depoimentos) -->
+    <section id="testimonials-section"
+        class="testimonials-section relative z-20 py-24 md:py-32 overflow-hidden bg-black border-t border-white/5">
+        <!-- Ambient Glow -->
+        <div
+            class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-[#384B80]/5 rounded-full blur-[140px] pointer-events-none z-0">
+        </div>
+
+        <!-- Header da Seção -->
+        <div class="max-w-[1440px] mx-auto px-6 md:px-16 lg:px-24 relative z-10 mb-12 md:mb-16">
+            <div class="flex items-center gap-4 mb-4 gs-reveal">
+                <span class="text-xs font-mono uppercase text-white/50 tracking-widest">05 / Depoimentos</span>
+                <div class="h-px bg-white/20 flex-1 max-w-[100px]"></div>
+            </div>
+            <h2
+                class="text-4xl md:text-5xl lg:text-6xl min-[1500px]:text-7xl font-medium tracking-tight text-white trust-title">
+                <span class="text-reveal-wrapper"><span
+                        class="text-reveal-content font-serif italic text-white/70">Confiança</span></span><br>
+                <span class="text-reveal-wrapper"><span class="text-reveal-content delay-200">Comprovada.</span></span>
+            </h2>
+            <p
+                class="text-secondary mt-6 max-w-2xl text-base md:text-lg min-[1500px]:text-xl font-light leading-relaxed reveal delay-300">
+                Veja o relato de líderes e gestores que confiam na Aura Shield para proteger seus ativos mais valiosos com
+                máxima precisão tecnológica.
+            </p>
+        </div>
+
+        <!-- Marquee Container -->
+        <div class="marquee-container relative z-10">
+            <div class="marquee-content">
+                <!-- Card 1 -->
+                <div class="testimonial-card">
+                    <div class="quote-icon">“</div>
+                    <p class="testimonial-text">A inteligência artificial do CFTV da Aura Shield mudou nossa dinâmica.
+                        Conseguimos detectar anomalias antes mesmo que as ocorrências se consolidem. Uma redução
+                        drástica em perdas.</p>
+                    <div class="testimonial-author">
+                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=150&h=150&auto=format&fit=crop"
+                            alt="Roberto Silveira" class="author-avatar">
+                        <div class="author-info">
+                            <span class="author-name">Roberto Silveira</span>
+                            <span class="author-role">Prevenção de Perdas - Supermercados Líder</span>
+                        </div>
+                    </div>
+                </div>
+                <!-- Card 2 -->
+                <div class="testimonial-card">
+                    <div class="quote-icon">“</div>
+                    <p class="testimonial-text">A segurança de nossos alunos é inegociável. O cerco perimetral
+                        inteligente e o monitoramento 24h criaram um escudo invisível, trazendo paz de espírito para os
+                        pais e para a gestão.</p>
+                    <div class="testimonial-author">
+                        <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=150&h=150&auto=format&fit=crop"
+                            alt="Márcia Helena" class="author-avatar">
+                        <div class="author-info">
+                            <span class="author-name">Márcia Helena</span>
+                            <span class="author-role">Diretora Geral - Colégio Vicente Costa</span>
+                        </div>
+                    </div>
+                </div>
+                <!-- Card 3 -->
+                <div class="testimonial-card">
+                    <div class="quote-icon">“</div>
+                    <p class="testimonial-text">Com mais de 10 anos de parceria, a Aura Shield provou que sua resposta rápida é
+                        real. A telemetria e o sistema de intrusão operam sem falhas em áreas de altíssimo fluxo de
+                        clientes.</p>
+                    <div class="testimonial-author">
+                        <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=150&h=150&auto=format&fit=crop"
+                            alt="Gustavo Henrique" class="author-avatar">
+                        <div class="author-info">
+                            <span class="author-name">Gustavo Henrique</span>
+                            <span class="author-role">Gerente de Operações - Meio a Meio</span>
+                        </div>
+                    </div>
+                </div>
+                <!-- Card 4 -->
+                <div class="testimonial-card">
+                    <div class="quote-icon">“</div>
+                    <p class="testimonial-text">As barreiras de alta tensão integradas com sensores volumétricos nos
+                        deram total tranquilidade. Qualquer tentativa de sabotagem física dispara alertas imediatos e
+                        criptografados.</p>
+                    <div class="testimonial-author">
+                        <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=150&h=150&auto=format&fit=crop"
+                            alt="Ricardo Ramos" class="author-avatar">
+                        <div class="author-info">
+                            <span class="author-name">Ricardo Ramos</span>
+                            <span class="author-role">Diretor Técnico - Condomínio Colina</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Duplicate Cards for Infinite Scrolling Loop -->
+                <!-- Card 1 Duplicate -->
+                <div class="testimonial-card">
+                    <div class="quote-icon">“</div>
+                    <p class="testimonial-text">A inteligência artificial do CFTV da Aura Shield mudou nossa dinâmica.
+                        Conseguimos detectar anomalias antes mesmo que as ocorrências se consolidem. Uma redução
+                        drástica em perdas.</p>
+                    <div class="testimonial-author">
+                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=150&h=150&auto=format&fit=crop"
+                            alt="Roberto Silveira" class="author-avatar">
+                        <div class="author-info">
+                            <span class="author-name">Roberto Silveira</span>
+                            <span class="author-role">Prevenção de Perdas - Supermercados Líder</span>
+                        </div>
+                    </div>
+                </div>
+                <!-- Card 2 Duplicate -->
+                <div class="testimonial-card">
+                    <div class="quote-icon">“</div>
+                    <p class="testimonial-text">A segurança de nossos alunos é inegociável. O cerco perimetral
+                        inteligente e o monitoramento 24h criaram um escudo invisível, trazendo paz de espírito para os
+                        pais e para a gestão.</p>
+                    <div class="testimonial-author">
+                        <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=150&h=150&auto=format&fit=crop"
+                            alt="Márcia Helena" class="author-avatar">
+                        <div class="author-info">
+                            <span class="author-name">Márcia Helena</span>
+                            <span class="author-role">Diretora Geral - Colégio Vicente Costa</span>
+                        </div>
+                    </div>
+                </div>
+                <!-- Card 3 Duplicate -->
+                <div class="testimonial-card">
+                    <div class="quote-icon">“</div>
+                    <p class="testimonial-text">Com mais de 10 anos de parceria, a Aura Shield provou que sua resposta rápida é
+                        real. A telemetria e o sistema de intrusão operam sem falhas em áreas de altíssimo fluxo de
+                        clientes.</p>
+                    <div class="testimonial-author">
+                        <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=150&h=150&auto=format&fit=crop"
+                            alt="Gustavo Henrique" class="author-avatar">
+                        <div class="author-info">
+                            <span class="author-name">Gustavo Henrique</span>
+                            <span class="author-role">Gerente de Operações - Meio a Meio</span>
+                        </div>
+                    </div>
+                </div>
+                <!-- Card 4 Duplicate -->
+                <div class="testimonial-card">
+                    <div class="quote-icon">“</div>
+                    <p class="testimonial-text">As barreiras de alta tensão integradas com sensores volumétricos nos
+                        deram total tranquilidade. Qualquer tentativa de sabotagem física dispara alertas imediatos e
+                        criptografados.</p>
+                    <div class="testimonial-author">
+                        <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=150&h=150&auto=format&fit=crop"
+                            alt="Ricardo Ramos" class="author-avatar">
+                        <div class="author-info">
+                            <span class="author-name">Ricardo Ramos</span>
+                            <span class="author-role">Diretor Técnico - Condomínio Colina</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sétima Dobra: Frase de Destaque -->
+    <section id="highlight-phrase-section"
+        class="min-h-screen bg-[#F5F5F7] flex items-center justify-center relative z-20 border-t border-stone-300 py-24 md:py-32 overflow-hidden">
+
+        <!-- Vignette Edge Gradients (Darker Edges) -->
+        <!-- Left dark shadow gradient -->
+        <div
+            class="absolute inset-y-0 left-0 w-1/3 bg-gradient-to-r from-[#1D1D1F]/40 via-[#1D1D1F]/10 to-transparent pointer-events-none z-0 mix-blend-multiply">
+        </div>
+        <!-- Right dark shadow gradient -->
+        <div
+            class="absolute inset-y-0 right-0 w-1/3 bg-gradient-to-l from-[#1D1D1F]/40 via-[#1D1D1F]/10 to-transparent pointer-events-none z-0 mix-blend-multiply">
+        </div>
+
+        <div
+            class="max-w-[1440px] mx-auto px-6 md:px-16 lg:px-24 relative z-10 w-full text-center flex flex-col items-center justify-center">
+            <span
+                class="text-xs font-sans uppercase text-[#384B80] tracking-[0.25em] block mb-8 reveal delay-100 font-bold">
+                Integração Universal
+            </span>
+            <h2
+                class="text-4xl md:text-5xl lg:text-6xl min-[1500px]:text-7xl font-medium tracking-tight text-[#1C1C1C] leading-[1.15] trust-title">
+                <span class="text-reveal-wrapper"><span class="text-reveal-content font-sans">A inteligência por trás da
+                        lente.</span></span><br>
+                <span class="text-reveal-wrapper"><span
+                        class="text-reveal-content delay-200 text-[#525252] font-sans">Construído para escala
+                        global.</span></span>
+            </h2>
+        </div>
+    </section>
+
+    <!-- Footer Premium -->
+    <footer class="bg-[#0A0A0A] border-t border-white/5 pt-16 pb-10 px-6 md:px-16 lg:px-24 relative z-20">
+        <div class="max-w-[1440px] mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+            <div class="flex items-center gap-2">
+                <img src="https://res.cloudinary.com/dpt3zi8kx/image/upload/v1784515927/Captura_de_tela_2026-07-19_224146-removebg-preview_qbyei7.png" alt="Aura Shield Logo" class="h-14 w-auto object-contain">
+                <div class="text-xl font-bold tracking-tighter text-white">
+                    <span class="text-[#384B80]"></span><span class="text-[#D33837]"></span>
+                </div>
+            </div>
+            <div
+                class="text-[11px] md:text-xs font-medium text-[#808080] tracking-wide flex flex-col md:flex-row items-center gap-1 md:gap-3">
+                <span>&copy; 2026 Vancer.</span>
+                <span class="hidden md:inline-block w-1 h-1 rounded-full bg-white/20"></span>
+                <span>Todos os direitos reservados.</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Floating WhatsApp Button -->
+    <a href="https://wa.me/5591983667171?text=Ol%C3%A1%2C%20tudo%20bem%3F" target="_blank" rel="noopener noreferrer"
+        id="whatsapp-floating-btn" aria-label="Contatar por WhatsApp">
+        <iconify-icon icon="mdi:whatsapp" style="font-size: 28px;"></iconify-icon>
+    </a>
+
+    <!-- CDNs -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://unpkg.com/@studio-freight/lenis@1.0.34/dist/lenis.min.js"></script>
+
+    <script>
+        // 1. Lenis Smooth Scroll Setup
+        const lenis = new Lenis({
+            duration: 1.2,
+            easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+            direction: 'vertical',
+            gestureDirection: 'vertical',
+            smooth: true,
+            mouseMultiplier: 1,
+            smoothTouch: false,
+            touchMultiplier: 2,
+            infinite: false,
+        });
+
+        lenis.on('scroll', ScrollTrigger.update);
+        gsap.ticker.add((time) => { lenis.raf(time * 1000); });
+        gsap.ticker.lagSmoothing(0);
+
+        gsap.registerPlugin(ScrollTrigger);
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Animações de entrada da Interface
+            const tl = gsap.timeline();
+            tl.to('.split-word', { y: '0%', opacity: 1, duration: 1.2, stagger: 0.1, ease: 'power4.out', delay: 0.3 });
+            tl.fromTo('.gs-reveal', { y: 30, opacity: 0, filter: 'blur(8px)' }, { y: 0, opacity: 1, filter: 'blur(0px)', duration: 1.2, stagger: 0.1, ease: 'power3.out' }, '-=0.8');
+
+            // --------------------------------------------------------
+            // IMAGE SEQUENCE SCROLL SCRUBBING (APPLE AIRPODS STYLE) - ADAPTATIVO
+            // --------------------------------------------------------
+            const canvas = document.getElementById('hero-canvas');
+            // { alpha: false } otimiza renderização na GPU desativando transparência no canvas base
+            const context = canvas.getContext('2d', { alpha: false });
+
+            const CONFIG = {
+                desktop: {
+                    frameCount: 240,
+                    getPath: (index) => `midas/frames/ezgif-frame-${(index + 1).toString().padStart(3, '0')}.jpg`
+                },
+                mobile: {
+                    frameCount: 200,
+                    getPath: (index) => `midas/frames_2/ezgif-frame-${(index + 1).toString().padStart(3, '0')}.jpg`
+                }
+            };
+
+            const imageCache = {
+                desktop: [],
+                mobile: []
+            };
+
+            let isMobileMode = window.matchMedia('(max-width: 768px)').matches;
+            let activeConfig = isMobileMode ? CONFIG.mobile : CONFIG.desktop;
+            const frames = { frame: 0 };
+
+            // Inicializa arrays com nulos para acompanhar carregamento por index
+            for (let i = 0; i < CONFIG.desktop.frameCount; i++) imageCache.desktop.push(null);
+            for (let i = 0; i < CONFIG.mobile.frameCount; i++) imageCache.mobile.push(null);
+
+            const preloadingStarted = {
+                desktop: false,
+                mobile: false
+            };
+
+            // Controle de Preloader e Progresso (Aura Design System)
+            const progressEl = document.getElementById('loader-progress');
+            const statusEl = document.getElementById('loader-status');
+            const preloaderEl = document.getElementById('preloader');
+
+            let loadedCount = 0;
+            let isPreloaderRemoved = false;
+
+            function updateLoaderUI() {
+                const totalFrames = activeConfig.frameCount;
+                const progressPercent = Math.min(100, Math.round((loadedCount / totalFrames) * 100));
+                if (progressEl) progressEl.style.width = `${progressPercent}%`;
+                if (statusEl) statusEl.textContent = `Carregando: ${progressPercent}%`;
+
+                if (progressPercent >= 50 && !isPreloaderRemoved) {
+                    isPreloaderRemoved = true;
+                    if (statusEl) statusEl.textContent = "Pronto";
+                    gsap.to(preloaderEl, {
+                        opacity: 0,
+                        duration: 0.6,
+                        ease: 'power2.out',
+                        onComplete: () => {
+                            preloaderEl.style.display = 'none';
+                        }
+                    });
+                }
+            }
+
+            function preloadImages(mode) {
+                const config = CONFIG[mode];
+                const cache = imageCache[mode];
+
+                if (preloadingStarted[mode]) {
+                    return Promise.resolve();
+                }
+                preloadingStarted[mode] = true;
+
+                return new Promise((resolve) => {
+                    const firstImg = new Image();
+                    firstImg.onload = () => {
+                        cache[0] = firstImg;
+                        loadedCount++;
+                        renderFrame();
+                        if (mode === 'mobile') {
+                            // Otimização: no mobile, finge que carregou tudo para liberar o preloader imediatamente
+                            loadedCount = config.frameCount;
+                            updateLoaderUI();
+                        } else {
+                            updateLoaderUI();
+                            loadRemainingImages(mode);
+                        }
+                        resolve();
+                    };
+                    firstImg.onerror = () => {
+                        if (mode === 'mobile') {
+                            loadedCount = config.frameCount;
+                            updateLoaderUI();
+                        } else {
+                            loadRemainingImages(mode);
+                        }
+                        resolve();
+                    };
+                    firstImg.src = config.getPath(0);
+                });
+            }
+
+            function loadRemainingImages(mode) {
+                if (mode === 'mobile') return; // Otimização: não carrega frames restantes no mobile
+                const config = CONFIG[mode];
+                const cache = imageCache[mode];
+                const CONCURRENCY = 6;
+                let nextIndex = 1;
+
+                function loadNext() {
+                    if (nextIndex >= config.frameCount) return;
+                    const index = nextIndex++;
+
+                    const img = new Image();
+                    img.onload = () => {
+                        cache[index] = img;
+                        loadedCount++;
+                        updateLoaderUI();
+
+                        const currentFrameIndex = Math.min(Math.round(frames.frame), activeConfig.frameCount - 1);
+                        if (currentFrameIndex === index) {
+                            renderFrame();
+                        }
+                        loadNext();
+                    };
+                    img.onerror = () => {
+                        loadedCount++;
+                        updateLoaderUI();
+                        loadNext();
+                    };
+                    img.src = config.getPath(index);
+                }
+
+                for (let i = 0; i < CONCURRENCY; i++) {
+                    loadNext();
+                }
+            }
+
+            function renderDesktop(img) {
+                if (canvas.width !== img.naturalWidth) {
+                    canvas.width = img.naturalWidth;
+                    canvas.height = img.naturalHeight;
+                }
+                context.drawImage(img, 0, 0);
+            }
+
+            let mobileCw = 0;
+            let mobileCh = 0;
+
+            function resizeCanvasMobile() {
+                const pin = document.getElementById('video-pin');
+                const rect = pin.getBoundingClientRect();
+                // Limita o multiplicador de DPR a no máximo 1.25 no mobile para otimizar desempenho
+                const dpr = Math.min(window.devicePixelRatio || 1, 1.25);
+
+                canvas.width = Math.round(rect.width * dpr);
+                canvas.height = Math.round(rect.height * dpr);
+                mobileCw = canvas.width;
+                mobileCh = canvas.height;
+
+                renderFrame();
+            }
+
+            function renderMobile(img) {
+                if (mobileCw === 0 || mobileCh === 0) return;
+
+                const cw = mobileCw;
+                const ch = mobileCh;
+                const iw = img.naturalWidth;
+                const ih = img.naturalHeight;
+
+                // Como o vídeo mobile já foi feito na vertical, usamos o scale 'cover' clássico
+                // para garantir que ele preencha a tela sem distorção.
+                const scale = Math.max(cw / iw, ch / ih);
+
+                const sw = iw * scale;
+                const sh = ih * scale;
+
+                const dx = (cw - sw) * 0.5;
+                const dy = (ch - sh) * 0.5;
+
+                context.clearRect(0, 0, cw, ch);
+                // Otimizado para mobile: desabilita suavização de alto custo computacional
+                context.imageSmoothingEnabled = false;
+                context.drawImage(img, dx, dy, sw, sh);
+            }
+
+            function renderFrame() {
+                const cache = isMobileMode ? imageCache.mobile : imageCache.desktop;
+                let frameIndex = Math.min(Math.round(frames.frame), activeConfig.frameCount - 1);
+
+                // NOVO: Busca retroativa pelo último frame disponível
+                while (frameIndex >= 0 && !(cache[frameIndex] && cache[frameIndex].complete && cache[frameIndex].naturalWidth !== 0)) {
+                    frameIndex--;
+                }
+
+                if (frameIndex < 0) return; // Nenhum frame disponível ainda
+
+                const img = cache[frameIndex];
+                if (isMobileMode) {
+                    renderMobile(img);
+                } else {
+                    renderDesktop(img);
+                }
+            }
+
+            let scrollTween = null;
+
+            function setupScrollTrigger() {
+                if (scrollTween) {
+                    scrollTween.scrollTrigger.kill();
+                    scrollTween.kill();
+                }
+
+                frames.frame = 0;
+
+                if (isMobileMode) {
+                    // No mobile, não criamos ScrollTrigger para o sequenciamento ou pin do canvas,
+                    // permitindo que o usuário role a tela normalmente para a próxima dobra
+                    scrollTween = null;
+                } else {
+                    scrollTween = gsap.to(frames, {
+                        frame: activeConfig.frameCount - 1,
+                        snap: "frame",
+                        ease: "none",
+                        scrollTrigger: {
+                            trigger: '#hero-container',
+                            start: 'top top',
+                            end: 'bottom bottom',
+                            scrub: true,
+                            pin: '#video-pin',
+                            anticipatePin: 1
+                        },
+                        onUpdate: renderFrame
+                    });
+                }
+            }
+
+            const mediaQuery = window.matchMedia('(max-width: 768px)');
+
+            function handleBreakpointChange(e) {
+                isMobileMode = e.matches;
+                activeConfig = isMobileMode ? CONFIG.mobile : CONFIG.desktop;
+
+                const targetMode = isMobileMode ? 'mobile' : 'desktop';
+
+                preloadImages(targetMode).then(() => {
+                    if (isMobileMode) {
+                        resizeCanvasMobile();
+                        window.addEventListener('resize', resizeCanvasMobile);
+                    } else {
+                        window.removeEventListener('resize', resizeCanvasMobile);
+                        canvas.style.width = '';
+                        canvas.style.height = '';
+                    }
+                    setupScrollTrigger();
+                    renderFrame();
+                });
+            }
+
+            mediaQuery.addEventListener('change', handleBreakpointChange);
+
+            const initialMode = isMobileMode ? 'mobile' : 'desktop';
+            preloadImages(initialMode).then(() => {
+                if (isMobileMode) {
+                    resizeCanvasMobile();
+                    window.addEventListener('resize', resizeCanvasMobile);
+                }
+                setupScrollTrigger();
+                renderFrame();
+            });
+
+            // Fade out parallax na interface
+            gsap.matchMedia().add("(max-width: 768px)", () => {
+                // Mobile
+                gsap.to('.hero-ui', {
+                    x: -50,
+                    opacity: 0,
+                    filter: 'blur(10px)',
+                    scrollTrigger: {
+                        trigger: '#hero-container',
+                        start: 'top top',
+                        end: 'bottom center',
+                        scrub: true
+                    }
+                });
+            });
+
+            gsap.matchMedia().add("(min-width: 769px)", () => {
+                // Desktop
+                gsap.to('.hero-ui', {
+                    x: -100,
+                    opacity: 0,
+                    filter: 'blur(10px)',
+                    scrollTrigger: {
+                        trigger: '#hero-container',
+                        start: 'top top',
+                        end: 'center center',
+                        scrub: true
+                    }
+                });
+            });
+
+            // --------------------------------------------------------
+            // DS15 REVEAL SYSTEM WITH ENTRY & EXIT EFFECTS
+            // --------------------------------------------------------
+            const observerOptions = { root: null, rootMargin: '0px', threshold: 0.15 };
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('active');
+                        const textWrappers = entry.target.querySelectorAll('.text-reveal-wrapper');
+                        if (textWrappers.length > 0) entry.target.classList.add('reveal-active');
+                    } else {
+                        // Efeito de saída: Remove classes quando sai da viewport
+                        entry.target.classList.remove('active');
+                        const textWrappers = entry.target.querySelectorAll('.text-reveal-wrapper');
+                        if (textWrappers.length > 0) entry.target.classList.remove('reveal-active');
+                    }
+                });
+            }, observerOptions);
+
+            document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+            document.querySelectorAll('.trust-title').forEach(el => {
+                if (el.querySelector('.text-reveal-wrapper')) {
+                    observer.observe(el);
+                    el.classList.add('reveal');
+                }
+            });
+
+            // --------------------------------------------------------
+            // 3D TILT & FLASHLIGHT EFFECT FOR CARDS - DESKTOP ONLY
+            // --------------------------------------------------------
+            if (!isMobileMode) {
+                document.querySelectorAll('.tilt-card').forEach(card => {
+                    card.addEventListener('mousemove', (e) => {
+                        const rect = card.getBoundingClientRect();
+                        const x = e.clientX - rect.left;
+                        const y = e.clientY - rect.top;
+
+                        // Flashlight coordinates
+                        card.style.setProperty('--mouse-x', `${x}px`);
+                        card.style.setProperty('--mouse-y', `${y}px`);
+
+                        // 3D Tilt calculations
+                        // Calculate relative position from center (-1 to 1)
+                        const centerX = rect.width / 2;
+                        const centerY = rect.height / 2;
+                        const deltaX = (x - centerX) / centerX;
+                        const deltaY = (y - centerY) / centerY;
+
+                        // Max rotation in degrees
+                        const maxRotate = 8;
+                        const rotateX = -deltaY * maxRotate; // Invert Y
+                        const rotateY = deltaX * maxRotate;
+
+                        card.style.setProperty('--rotate-x', `${rotateX}deg`);
+                        card.style.setProperty('--rotate-y', `${rotateY}deg`);
+                    });
+                });
+            }
+
+            // --------------------------------------------------------
+            // CLIENTS TIMELINE AWAKENING SYSTEM
+            // --------------------------------------------------------
+
+            // Scrubbing the energy line
+            gsap.to('#energy-line', {
+                height: '100%',
+                ease: 'none',
+                scrollTrigger: {
+                    trigger: '#timeline-container',
+                    start: 'top center',
+                    end: 'bottom center',
+                    scrub: true // Otimizado: remove double smoothing do mobile
+                }
+            });
+
+            // Awaken cards as line hits them
+            const clientCards = document.querySelectorAll('.client-card-wrapper');
+            clientCards.forEach((wrapper) => {
+                const card = wrapper.querySelector('.client-card');
+                const beam = wrapper.querySelector('.connection-beam');
+
+                ScrollTrigger.create({
+                    trigger: wrapper,
+                    start: 'center center+=100',
+                    onEnter: () => {
+                        card.classList.add('is-active');
+                        if (beam) beam.classList.add('is-active');
+                    },
+                    onLeaveBack: () => {
+                        card.classList.remove('is-active');
+                        if (beam) beam.classList.remove('is-active');
+                    }
+                });
+
+                // Magnetic Float (Vanilla JS) - DESKTOP ONLY
+                if (!isMobileMode) {
+                    card.addEventListener('mousemove', (e) => {
+                        if (!card.classList.contains('is-active')) return;
+                        const rect = card.getBoundingClientRect();
+                        const x = e.clientX - rect.left - rect.width / 2;
+                        const y = e.clientY - rect.top - rect.height / 2;
+
+                        gsap.to(card, {
+                            x: x * 0.05,
+                            y: y * 0.05,
+                            rotationY: x * 0.02,
+                            rotationX: -y * 0.02,
+                            ease: 'power2.out',
+                            duration: 0.5
+                        });
+                    });
+
+                    card.addEventListener('mouseleave', () => {
+                        gsap.to(card, {
+                            x: 0,
+                            y: 0,
+                            rotationY: 0,
+                            rotationX: 0,
+                            ease: 'elastic.out(1, 0.3)',
+                            duration: 1
+                        });
+                    });
+                }
+            });
+
+            // --------------------------------------------------------
+            // HORIZONTAL SCROLL (GSAP)
+            // --------------------------------------------------------
+            let mm = gsap.matchMedia();
+
+            mm.add("all", () => {
+                const carousel = document.getElementById('services-carousel');
+                const servicesSection = document.getElementById('services-section');
+
+                // O valor que o carrossel precisará transladar no eixo X
+                let getScrollAmount = () => -(carousel.scrollWidth - window.innerWidth);
+
+                const scrollTween = gsap.to(carousel, {
+                    x: getScrollAmount,
+                    ease: "none",
+                    scrollTrigger: {
+                        trigger: carousel,
+                        pin: servicesSection,
+                        start: "center center",
+                        scrub: 1,
+                        end: () => "+=" + Math.abs(getScrollAmount()),
+                        invalidateOnRefresh: true
+                    }
+                });
+
+                return () => {
+                    scrollTween.kill();
+                };
+            });
+
+            // --------------------------------------------------------
+            // FAQ INTERACTION & FLASHLIGHT EFFECTS (Aura DS15)
+            // --------------------------------------------------------
+            window.toggleFaq = function (element) {
+                const isOpen = element.classList.contains('is-open');
+
+                // Close other FAQ items
+                document.querySelectorAll('.faq-item').forEach(item => {
+                    item.classList.remove('is-open');
+                });
+
+                // Toggle current item
+                if (!isOpen) {
+                    element.classList.add('is-open');
+                }
+            };
+
+            // Set flashlight mouse position tracking
+            document.querySelectorAll('.faq-flashlight-card').forEach(card => {
+                card.addEventListener('mousemove', (e) => {
+                    const rect = card.getBoundingClientRect();
+                    card.style.setProperty('--mouse-x', `${e.clientX - rect.left}px`);
+                    card.style.setProperty('--mouse-y', `${e.clientY - rect.top}px`);
+                });
+            });
+
+            // Testimonial card flashlight mouse position tracking
+            document.querySelectorAll('.testimonial-card').forEach(card => {
+                card.addEventListener('mousemove', (e) => {
+                    const rect = card.getBoundingClientRect();
+                    card.style.setProperty('--mouse-x', `${e.clientX - rect.left}px`);
+                    card.style.setProperty('--mouse-y', `${e.clientY - rect.top}px`);
+                });
+            });
+
+            // --------------------------------------------------------
+            // WHATSAPP FLOATING BUTTON VISIBILITY
+            // --------------------------------------------------------
+            ScrollTrigger.create({
+                trigger: '#trust-section', // A segunda dobra
+                start: 'top 80%',
+                onEnter: () => document.getElementById('whatsapp-floating-btn').classList.add('show'),
+                onLeaveBack: () => document.getElementById('whatsapp-floating-btn').classList.remove('show'),
+            });
+
+        });
+    </script>
+</body>
+
+</html>

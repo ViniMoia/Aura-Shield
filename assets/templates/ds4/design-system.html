@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Design System | Portfolio com Vibe Design</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Oswald:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Original Styles -->
+    <link rel="stylesheet" href="style.css">
+    
+    <!-- Scripts -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
+    
+    <style>
+        /* ==========================================================================
+           DOCUMENTATION LAYOUT STYLES (NO REDESIGN RULES VIOLATED)
+           These classes are exclusively for structuring the presentation of the DS.
+           ========================================================================== */
+        body {
+            padding-top: 80px; /* Space for the sticky header */
+        }
+        .ds-top-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 70px;
+            background: rgba(5, 5, 5, 0.95);
+            backdrop-filter: blur(15px);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 3rem;
+            z-index: 9999;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .ds-top-nav-brand {
+            font-family: var(--font-display);
+            font-size: 1.5rem;
+            font-weight: 500;
+            color: white;
+            text-decoration: none;
+            letter-spacing: -0.02em;
+        }
+        .ds-top-nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+        .ds-top-nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            font-weight: 500;
+            letter-spacing: 0.1em;
+            transition: color 0.3s;
+        }
+        .ds-top-nav-links a:hover {
+            color: var(--primary);
+        }
+        
+        .ds-section {
+            padding: 6rem 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            position: relative;
+        }
+        .ds-section-header {
+            margin-bottom: 4rem;
+        }
+        .ds-section-title {
+            font-family: var(--font-display);
+            font-size: 2.5rem;
+            color: white;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .ds-section-desc {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            margin-top: 0.5rem;
+            max-width: 700px;
+        }
+        
+        .ds-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+        .ds-grid-large {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 4rem;
+        }
+        
+        .ds-showcase-box {
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 1.5rem;
+            padding: 3rem;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+        .ds-showcase-box.center-content {
+            align-items: center;
+            text-align: center;
+        }
+        
+        .ds-showcase-label {
+            font-family: var(--font-body);
+            font-size: 0.75rem;
+            color: rgba(255,255,255,0.4);
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            margin-bottom: 1.5rem;
+            display: block;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 0.5rem;
+        }
+        
+        .ds-color-swatch {
+            height: 120px;
+            border-radius: 1rem;
+            margin-bottom: 1rem;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .ds-typography-spec {
+            margin-bottom: 2rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px dashed rgba(255,255,255,0.1);
+        }
+        .ds-typography-spec:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        .ds-font-name {
+            color: var(--primary);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 1rem;
+        }
+
+        /* ==========================================================================
+           ORIGINAL INLINE STYLES EXTRACTED FROM HTML HEAD
+           ========================================================================== */
+        .hero {
+            /* Modified for showcase to fit within boxes smoothly */
+            padding-top: 4rem;
+            position: relative;
+        }
+
+        .hero-content {
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            gap: 6rem;
+            align-items: center;
+            width: 100%;
+        }
+
+        .hero-text {
+            display: flex;
+            flex-direction: column;
+            gap: 2.5rem;
+        }
+
+        .headline {
+            font-family: var(--font-display);
+            font-size: clamp(3rem, 6vw, 5rem);
+            font-weight: 200;
+            line-height: 1.1;
+            letter-spacing: -0.01em;
+            text-transform: none;
+            max-width: 800px;
+        }
+
+        .headline span {
+            color: var(--primary);
+            font-weight: 300;
+            position: relative;
+        }
+
+        .headline span::after {
+            content: '';
+            position: absolute;
+            bottom: 0.1em;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: var(--primary);
+            opacity: 0.3;
+        }
+
+        .subheadline {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            max-width: 520px;
+            font-weight: 300;
+            line-height: 1.6;
+        }
+
+        .hero-image-container {
+            position: relative;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .hero-image-wrapper {
+            position: relative;
+            width: 100%;
+            max-width: 480px;
+            aspect-ratio: 0.85;
+            border-radius: 3rem;
+            overflow: hidden;
+            border: 2px solid var(--primary-border);
+            background: #0a0a0c;
+            box-shadow: 0 0 30px -10px var(--primary-glow), 0 50px 100px -20px rgba(0,0,0,0.7);
+            transition: border-color 0.4s;
+        }
+
+        .hero-image-wrapper:hover {
+            border-color: var(--primary);
+        }
+
+        .hero-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: top;
+            filter: contrast(1.05);
+            mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
+            -webkit-mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
+        }
+
+        .image-glow {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-30%, -30%);
+            width: 120%;
+            height: 120%;
+            background: radial-gradient(circle, var(--primary-glow) 0%, transparent 70%);
+            filter: blur(60px);
+            z-index: -1;
+            opacity: 0.6;
+        }
+
+        .badge {
+            display: inline-flex;
+            padding: 0.4rem 1rem;
+            background: rgba(59, 130, 246, 0.08);
+            border: 1px solid rgba(59, 130, 246, 0.15);
+            border-radius: 9999px;
+            color: var(--primary);
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+            width: fit-content;
+        }
+
+        .cta-group {
+            display: flex;
+            gap: 2.5rem;
+            align-items: center;
+        }
+
+        .btn-secondary {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: var(--text-main);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            transition: all 0.3s;
+        }
+
+        .btn-secondary:hover {
+            opacity: 0.7;
+            transform: translateX(4px);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Top Navigation for Showcase -->
+    <nav class="ds-top-nav">
+        <a href="#" class="ds-top-nav-brand">DS SHOWCASE</a>
+        <div class="ds-top-nav-links">
+            <a href="#tokens">Tokens</a>
+            <a href="#ui">UI Components</a>
+            <a href="#hero">Hero & Icons</a>
+            <a href="#timeline">Timeline</a>
+            <a href="#projects">3D Cards</a>
+            <a href="#testimonials">Testimonials</a>
+            <a href="#cta">CTA Aura</a>
+        </div>
+    </nav>
+
+    <!-- SECTION: TOKENS -->
+    <section id="tokens" class="ds-section">
+        <div class="ds-section-header">
+            <h2 class="ds-section-title">Design Tokens</h2>
+            <p class="ds-section-desc">Color palette and typography system used throughout the interface.</p>
+        </div>
+
+        <div class="ds-grid">
+            <div class="ds-showcase-box">
+                <span class="ds-showcase-label">Core Colors</span>
+                <div style="width: 100%;">
+                    <div class="ds-color-swatch" style="background-color: var(--bg-page);"></div>
+                    <div>var(--bg-page) #000000</div>
+                </div>
+                <div style="width: 100%;">
+                    <div class="ds-color-swatch" style="background-color: var(--bg-surface);"></div>
+                    <div>var(--bg-surface) #050505</div>
+                </div>
+                <div style="width: 100%;">
+                    <div class="ds-color-swatch" style="background-color: var(--bg-card);"></div>
+                    <div>var(--bg-card) #0A0A0C</div>
+                </div>
+            </div>
+
+            <div class="ds-showcase-box">
+                <span class="ds-showcase-label">Accent Colors</span>
+                <div style="width: 100%;">
+                    <div class="ds-color-swatch" style="background-color: var(--primary);"></div>
+                    <div>var(--primary) #3b82f6</div>
+                </div>
+                <div style="width: 100%;">
+                    <div class="ds-color-swatch" style="background-color: var(--tech-cyan);"></div>
+                    <div>var(--tech-cyan) #00f5ff</div>
+                </div>
+                <div style="width: 100%;">
+                    <div class="ds-color-swatch" style="background-color: var(--tech-purple);"></div>
+                    <div>var(--tech-purple) #9d00ff</div>
+                </div>
+            </div>
+
+            <div class="ds-showcase-box" style="grid-column: span 2;">
+                <span class="ds-showcase-label">Typography System</span>
+                
+                <div class="ds-typography-spec">
+                    <div class="ds-font-name">var(--font-display) - Oswald</div>
+                    <h1 class="headline">
+                        Headline <span>Display</span> Text
+                    </h1>
+                </div>
+
+                <div class="ds-typography-spec">
+                    <div class="ds-font-name">var(--font-body) - Inter</div>
+                    <p class="subheadline">
+                        Eu ajudo a transformar dados brutos em respostas claras para negócios que não têm tempo a perder.
+                    </p>
+                    <br>
+                    <p style="font-size: 1rem; color: var(--text-secondary);">
+                        Standard paragraph text used for descriptions, reading material, and smaller UI elements.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION: UI COMPONENTS -->
+    <section id="ui" class="ds-section">
+        <div class="ds-section-header">
+            <h2 class="ds-section-title">Base UI Components</h2>
+            <p class="ds-section-desc">Atomic elements like buttons, badges, and navigation items.</p>
+        </div>
+
+        <div class="ds-grid">
+            <div class="ds-showcase-box center-content">
+                <span class="ds-showcase-label">Primary Button (Beam)</span>
+                
+                <a href="#" class="btn-beam">
+                    <div class="beam-border"></div>
+                    <div class="btn-content-bg">
+                        <div class="lines-overlay"></div>
+                        <div class="bottom-glow"></div>
+                    </div>
+                    <span style="position: relative; z-index: 10; display: flex; align-items: center;">
+                        Ver Projetos
+                        <i data-lucide="arrow-up-right" style="margin-left: 0.6rem; width: 1.1rem; height: 1.1rem;"></i>
+                    </span>
+                </a>
+
+                <div style="margin-top: 2rem;">
+                    <a href="#" class="btn-beam cta-large">
+                        <span class="btn-content-bg"></span>
+                        <span class="beam-border"></span>
+                        <span class="lines-overlay"></span>
+                        <span class="bottom-glow"></span>
+                        Large CTA Button
+                    </a>
+                </div>
+            </div>
+
+            <div class="ds-showcase-box center-content">
+                <span class="ds-showcase-label">Secondary Actions</span>
+                
+                <a href="#" class="btn-nav-accent">
+                    Falar Comigo (Nav Accent)
+                </a>
+
+                <div style="margin-top: 2rem;">
+                    <a href="#" class="btn-secondary">
+                        Secondary Text Button
+                        <i data-lucide="arrow-right" style="width: 1.1rem; height: 1.1rem;"></i>
+                    </a>
+                </div>
+            </div>
+
+            <div class="ds-showcase-box center-content">
+                <span class="ds-showcase-label">Badge & Status</span>
+                
+                <div class="badge">Especialista em Análise de Dados</div>
+                
+                <div style="margin-top: 2rem;" class="ds-showcase-label">Glass Nav (Static Replica)</div>
+                <div class="glass-nav" style="position: relative; top: auto; left: auto; transform: none; width: 100%;">
+                    <a href="#" style="font-family: var(--font-display); font-size: 1.2rem; font-weight: 300; text-decoration: none; color: white;">BRAND</a>
+                    <div style="display: flex; gap: 1rem;">
+                        <a href="#" style="color: var(--text-secondary); text-decoration: none; font-size: 0.8rem; text-transform: uppercase;">Link</a>
+                    </div>
+                    <a href="#" class="btn-nav-accent" style="height: 32px; padding: 0 1rem; font-size: 0.6rem;">Action</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION: HERO COMPONENTS -->
+    <section id="hero" class="ds-section">
+        <div class="ds-section-header">
+            <h2 class="ds-section-title">Hero Image & Floating Icons</h2>
+            <p class="ds-section-desc">The main visual elements used in the intro, featuring glows and floating animations.</p>
+        </div>
+
+        <div class="ds-showcase-box">
+            <div class="hero-image-container animate-blur-in" style="min-height: 500px; padding-top: 4rem;">
+                <div class="image-glow"></div>
+                
+                <!-- Floating Tool Icons -->
+                <div class="tool-icon animate-float" style="top: 5%; left: 0; animation-duration: 7s;">
+                    <span class="iconify" data-icon="logos:python"></span>
+                </div>
+                <div class="tool-icon animate-float" style="top: 15%; right: 10%; animation-duration: 5s; animation-delay: 1s;">
+                    <span class="iconify" data-icon="logos:postgresql"></span>
+                </div>
+                <div class="tool-icon animate-float" style="bottom: 10%; left: 5%; animation-duration: 8s; animation-delay: 2s;">
+                    <span class="iconify" data-icon="logos:tableau-icon"></span>
+                </div>
+
+                <div class="hero-image-wrapper animate-float">
+                    <img src="assets/lucas-petry.jpg" alt="Lucas Petry" class="hero-image">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION: TIMELINE -->
+    <section id="timeline" class="ds-section">
+        <div class="ds-section-header">
+            <h2 class="ds-section-title">Experience Timeline</h2>
+            <p class="ds-section-desc">Vertical scrolling timeline with glass cards and dynamic progress line.</p>
+        </div>
+
+        <div class="ds-showcase-box" style="padding: 5rem 0;">
+            <div class="timeline-outer">
+                <div class="timeline-body" style="position: relative;">
+                    <div class="timeline-v-line"></div>
+                    <div class="timeline-v-progress" style="height: 100%;"></div>
+
+                    <!-- Right aligned card -->
+                    <div class="timeline-item-wrapper active">
+                        <div class="timeline-v-dot"></div>
+                        <div class="timeline-item-content">
+                            <span class="timeline-v-year">2020</span>
+                            <div class="timeline-card-glass">
+                                <div class="company-header">
+                                    <div class="company-logo">
+                                        <span class="iconify" data-icon="simple-icons:nubank" style="color: #820ad1;"></span>
+                                    </div>
+                                    <h3 class="company-name">Nubank</h3>
+                                </div>
+                                <p class="job-desc">
+                                    Analista de dados no time de crédito. Exemplo de card de timeline.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Left aligned card -->
+                    <div class="timeline-item-wrapper active">
+                        <div class="timeline-v-dot"></div>
+                        <div class="timeline-item-content">
+                            <span class="timeline-v-year">2022</span>
+                            <div class="timeline-card-glass">
+                                <div class="company-header">
+                                    <div class="company-logo">
+                                        <span class="iconify" data-icon="logos:google-icon"></span>
+                                    </div>
+                                    <h3 class="company-name">Google</h3>
+                                </div>
+                                <p class="job-desc">
+                                    Integrou o time de analytics de produto. Trabalhou com métricas de engajamento e retenção.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION: 3D CARDS -->
+    <section id="projects" class="ds-section">
+        <div class="ds-section-header">
+            <h2 class="ds-section-title">3D Project Cards</h2>
+            <p class="ds-section-desc">Cards with 3D tilt functionality, mouse-tracking flashlight effects, and skew image reveals.</p>
+        </div>
+
+        <div class="projects-section" style="padding: 2rem; border-radius: 2rem;">
+            <div class="proj-bg"></div>
+            <div class="projects-grid" style="margin-top: 0;">
+                
+                <!-- Project 1: Featured -->
+                <div class="project-card featured active" style="--accent-rgb: 0, 245, 255;">
+                    <div class="project-inner-grid"></div>
+                    <div class="project-img-wrapper">
+                        <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=1200" alt="Dashboard Performance">
+                    </div>
+                    <div class="project-info">
+                        <div class="project-meta">
+                            <span class="company">Nubank</span>
+                            <span class="year">2021</span>
+                        </div>
+                        <h3 class="project-title">Dashboard<br>comercial</h3>
+                        <p class="project-desc">Centralizou métricas de vendas e inadimplência em um painel único para decisões globais.</p>
+                    </div>
+                </div>
+
+                <!-- Project 2 -->
+                <div class="project-card active" style="--accent-rgb: 157, 0, 255;">
+                    <div class="project-inner-grid"></div>
+                    <div class="project-img-wrapper">
+                        <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=800" alt="Churn Analysis">
+                    </div>
+                    <div class="project-info">
+                        <div class="project-meta">
+                            <span class="company">Example</span>
+                            <span class="year">2023</span>
+                        </div>
+                        <h3 class="project-title">Análise<br>real</h3>
+                        <p class="project-desc">Identificou os principais fatores de cancelamento.</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION: MARQUEE -->
+    <section id="testimonials" class="ds-section">
+        <div class="ds-section-header">
+            <h2 class="ds-section-title">Testimonials Marquee</h2>
+            <p class="ds-section-desc">Infinite scrolling, pause-on-hover marquee with glass frosted cards.</p>
+        </div>
+
+        <div class="ds-showcase-box" style="padding: 0; overflow: hidden; background: #000;">
+            <div class="marquee-container" style="padding: 2rem 0;">
+                <div class="marquee-content">
+                    <!-- Testimonial 1 -->
+                    <div class="testimonial-card">
+                        <div class="quote-icon">“</div>
+                        <p class="testimonial-text">O Lucas tem uma habilidade rara: ele traduz análises complexas em algo que qualquer pessoa da empresa consegue entender e usar.</p>
+                        <div class="testimonial-author">
+                            <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=150&h=150&auto=format&fit=crop" alt="Ana Mendes" class="author-avatar">
+                            <div class="author-info">
+                                <span class="author-name">Ana Carolina Mendes</span>
+                                <span class="author-role">Gerente de Produto</span>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Testimonial 2 -->
+                    <div class="testimonial-card">
+                        <div class="quote-icon">“</div>
+                        <p class="testimonial-text">Em pouco tempo, o Lucas estava contribuindo com análises que influenciavam decisões de produto em escala global.</p>
+                        <div class="testimonial-author">
+                            <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=150&h=150&auto=format&fit=crop" alt="Felipe Rodrigues" class="author-avatar">
+                            <div class="author-info">
+                                <span class="author-name">Felipe Rodrigues</span>
+                                <span class="author-role">Head de Analytics</span>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Duplicate for loop -->
+                    <div class="testimonial-card">
+                        <div class="quote-icon">“</div>
+                        <p class="testimonial-text">O Lucas tem uma habilidade rara: ele traduz análises complexas em algo que qualquer pessoa da empresa consegue entender e usar.</p>
+                        <div class="testimonial-author">
+                            <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=150&h=150&auto=format&fit=crop" alt="Ana Mendes" class="author-avatar">
+                            <div class="author-info">
+                                <span class="author-name">Ana Carolina Mendes</span>
+                                <span class="author-role">Gerente de Produto</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION: CTA AURA -->
+    <section id="cta" class="ds-section">
+        <div class="ds-section-header">
+            <h2 class="ds-section-title">CTA Aura & Liquid Backgrounds</h2>
+            <p class="ds-section-desc">The high-fidelity liquid aura backgrounds and complex container filters used in hero and CTA sections.</p>
+        </div>
+
+        <div class="ds-showcase-box" style="padding: 0; min-height: 600px; background: #000; overflow: hidden;">
+            
+            <!-- Liquid Background -->
+            <div class="bg-aura-wrapper" style="position: absolute; inset: 0; z-index: 0;">
+                <div class="aura aura-1"></div>
+                <div class="aura aura-2"></div>
+                <div class="aura aura-3"></div>
+                <div class="bg-noise"></div>
+            </div>
+
+            <div class="cta-section reveal active" style="padding: 4rem 2rem; position: relative; z-index: 1; height: 100%; min-height: 600px; display: flex; align-items: center; justify-content: center; background: transparent;">
+                <div class="cta-aura"></div>
+                <div class="cta-container">
+                    <div class="cta-card">
+                        <h2 class="headline">
+                            Seu próximo projeto pode ser <span>guiado por dados.</span>
+                        </h2>
+                        <div class="cta-action">
+                            <a href="#" class="btn-beam cta-large">
+                                <span class="btn-content-bg"></span>
+                                <span class="beam-border"></span>
+                                <span class="lines-overlay"></span>
+                                <span class="bottom-glow"></span>
+                                Entrar em contato
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+
+        // --- Project Card 3D Tilt & Mouse Interaction ---
+        const handleOnMouseMove = e => {
+            const { currentTarget: target } = e;
+            const rect = target.getBoundingClientRect(),
+            x = e.clientX - rect.left,
+            y = e.clientY - rect.top;
+
+            // Flashlight vars
+            target.style.setProperty("--mouse-x", `${x}px`);
+            target.style.setProperty("--mouse-y", `${y}px`);
+
+            // 3D Tilt calculation
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+            const rotateX = ((y - centerY) / centerY) * -10; // Max 10deg
+            const rotateY = ((x - centerX) / centerX) * 10;
+
+            target.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+        };
+
+        const handleMouseLeave = e => {
+            const { currentTarget: target } = e;
+            target.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg)`;
+        };
+
+        for(const card of document.querySelectorAll(".project-card")) {
+            card.addEventListener('mousemove', handleOnMouseMove);
+            card.addEventListener('mouseleave', handleMouseLeave);
+        }
+    </script>
+</body>
+</html>
